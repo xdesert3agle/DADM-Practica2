@@ -1,9 +1,14 @@
 package es.dadm.practica2;
 
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -15,15 +20,20 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dadm.practica2.util.CardAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class fragmentCards extends Fragment {
 
     @BindView(R.id.rvCards) RecyclerView mRecycler;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        ButterKnife.bind(getActivity());
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_cards, container, false);
 
         Factura factura = new Factura();
         factura.setId(1);
@@ -44,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         facturas.add(factura2);
 
         mRecycler.setAdapter(new CardAdapter(facturas));
-        mRecycler.setHasFixedSize(true);
-        mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        //factura.printInfo();
+        mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        return view;
     }
 }
