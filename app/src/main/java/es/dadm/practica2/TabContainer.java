@@ -31,9 +31,9 @@ public class TabContainer extends AppCompatActivity {
     private void setUpViewPager(ViewPager viewPager){
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
 
-        adapter.addFragment(new fragmentList(), getString(R.string.LIST_TAB_TITLE));
-        adapter.addFragment(new fragmentTiles(), getString(R.string.TILES_TAB_TITLE));
-        adapter.addFragment(new fragmentCards(), getString(R.string.CARDS_TAB_TITLE));
+        adapter.addFragment(new fragmentList(), getString(R.string.TAB_LIST_TITLE));
+        adapter.addFragment(new fragmentTiles(), getString(R.string.TAB_TILES_TITLE));
+        adapter.addFragment(new fragmentCards(), getString(R.string.TAB_CARDS_TITLE));
 
         viewPager.setAdapter(adapter);
     }

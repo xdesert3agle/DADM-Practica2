@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Practica2</string>
-    <string name="LIST_TAB_TITLE">Lista</string>
-    <string name="TILES_TAB_TITLE">Mosaico</string>
-    <string name="CARDS_TAB_TITLE">Cartas</string>
+
     <string name="TAB_CONTAINER_TITLE">Mis facturas</string>
+    <string name="TAB_LIST_TITLE">Lista</string>
+    <string name="TAB_TILES_TITLE">Mosaico</string>
+    <string name="TAB_CARDS_TITLE">Tarjetas</string>
 </resources>
