@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Practica2</string>
 
-    <string name="TAB_CONTAINER_TITLE">Mis facturas</string>
+    <string name="TAB_CONTAINER_TITLE">Mis facturas (%1$d)</string>
+
     <string name="TAB_LIST_TITLE">Lista</string>
+
     <string name="TAB_TILES_TITLE">Mosaico</string>
+
     <string name="TAB_CARDS_TITLE">Tarjetas</string>
+    <string name="TAB_CARDS_BILL_PRICE">%1$d €</string>
 </resources>

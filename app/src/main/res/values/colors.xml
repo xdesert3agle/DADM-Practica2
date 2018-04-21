@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
 
-    <!-- Custom colors -->
-    <color name="m_Red">#C62828</color>
+    <!-- Dark theme -->
+    <color name="mdark_primary">#212121</color>
+    <color name="mdark_primaryDark">#000000</color>
+    <color name="mdark_accent">#424242</color>
+
+    <!-- Light theme -->
+    <color name="mlight_primary">#2196F3</color>
+    <color name="mlight_primaryDark">#1976D2</color>
+    <color name="mlight_accent">#FF4081</color>
+
+
+    <!-- Material custom colors -->
+    <color name="material_green">#17D326</color>
+    <color name="material_red">#F44336</color>
+    <color name="material_white">#FFFFFF</color>
+
 </resources>
