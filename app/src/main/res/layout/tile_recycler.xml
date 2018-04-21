@@ -20,12 +20,12 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/llCardImage"
+                android:id="@+id/llBillImg"
                 android:layout_width="match_parent"
                 android:layout_height="180dp">
 
                 <ImageView
-                    android:id="@+id/ivFactura"
+                    android:id="@+id/ivBillImg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -33,7 +33,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llCardFields"
+                android:id="@+id/llBillFields"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"

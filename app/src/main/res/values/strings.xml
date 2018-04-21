@@ -9,4 +9,9 @@
 
     <string name="TAB_CARDS_TITLE">Tarjetas</string>
     <string name="TAB_CARDS_BILL_PRICE">%1$d €</string>
+
+    <!-- DRAWER MENU -->
+    <string name="DRAWER_OPTION_BILLS">Facturas</string>
+    <string name="DRAWER_OPTION_CATEGORIES">Categorías</string>
+
 </resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivBillImg"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/card_placeholder"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:id="@+id/llBillFields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Título de la carta"
+            android:maxLines="1"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvLongDesc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Descripción larga de la tarjeta. ayer me coasfasfasfasfaf"
+            android:maxLines="1"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Precio"
+            android:textSize="20sp"
+            android:textColor="?colorAccent"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

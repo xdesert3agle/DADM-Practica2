@@ -1,7 +1,6 @@
-package es.dadm.practica2.util;
+package es.dadm.practica2.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,34 +14,33 @@ import butterknife.ButterKnife;
 import es.dadm.practica2.Bill;
 import es.dadm.practica2.R;
 
-public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CuestionViewHolder>{
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>{
     private ArrayList<Bill> mBillList;
     private final Context mContext;
 
-    public CardAdapter(ArrayList<Bill> billList, Context context){
+    public ListAdapter(ArrayList<Bill> billList, Context context){
         this.mBillList = billList;
         this.mContext = context;
     }
 
-    static class CuestionViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.cvBill) CardView cvBill;
+    static class ListViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvTitle) TextView tvTitle;
         @BindView(R.id.tvPrice) TextView tvPrice;
 
-        CuestionViewHolder(View itemView) {
+        ListViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
     @Override
-    public CuestionViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_recycler, viewGroup, false);
-        return new CuestionViewHolder(v);
+    public ListViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_recycler, viewGroup, false);
+        return new ListViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(CuestionViewHolder holder, int position) {
+    public void onBindViewHolder(ListViewHolder holder, int position) {
         Bill bill = mBillList.get(position);
 
         holder.tvTitle.setText(bill.getTitle());

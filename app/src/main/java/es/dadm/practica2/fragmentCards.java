@@ -9,16 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.util.CardAdapter;
+import es.dadm.practica2.adapters.CardAdapter;
 
 public class fragmentCards extends Fragment {
-    @BindView(R.id.rvCards) RecyclerView mRecycler;
-    ArrayList<Bill> mBillList;
+    @BindView(R.id.rvBills) RecyclerView mRecycler;
     ArrayList<Category> mCategoryList;
 
     private static final String BUNDLE_BILL_LIST = "Bill list";

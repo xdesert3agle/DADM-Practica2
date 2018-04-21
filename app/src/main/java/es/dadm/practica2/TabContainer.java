@@ -1,5 +1,6 @@
 package es.dadm.practica2;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -7,15 +8,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.util.SectionsPageAdapter;
+import es.dadm.practica2.adapters.TabsAdapter;
 
 
 public class TabContainer extends AppCompatActivity {
@@ -23,7 +35,8 @@ public class TabContainer extends AppCompatActivity {
     @BindView(R.id.tlTabs) TabLayout mTabLayout;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
-    private SectionsPageAdapter mSectionsPageAdapter;
+    private Drawer mDrawer;
+
     private List<Category> mCategoryList = new ArrayList<>();
 
     private static final String BUNDLE_BILL_LIST = "Bill list";
@@ -42,24 +55,38 @@ public class TabContainer extends AppCompatActivity {
         // Sets the Activity title to 'My bills (amount)'
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), getTotalBills()));
+
+        setUpDrawer();
+
+        /*ActionBarDrawerToggle toggle =
+
+        mDrawerMenu.addDrawerListener(toggle);
+        toggle.syncState();*/
     }
 
+    /*@Override
+    public void onBackPressed() {
+        if (mDrawerMenu.isDrawerOpen(GravityCompat.START)){
+            mDrawerMenu.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }*/
+
     private void setUpViewPager(ViewPager viewPager){
-        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+        TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager());
 
         Category videogames = new Category();
         mCategoryList.add(videogames);
 
         Bill facturaPS4 = new Bill();
         facturaPS4.setId(1);
-        //facturaPS4.setCategory("Videojuegos");
         facturaPS4.setAmount(299);
         facturaPS4.setTitle("PS4 Slim (1 TB)");
         facturaPS4.setDescription("Prueba descripción larga de PS4");
 
         Bill facturaGOW = new Bill();
         facturaGOW.setId(2);
-        //facturaGOW.setCategory("Videojuegos");
         facturaGOW.setAmount(60);
         facturaGOW.setTitle("God Of War");
         facturaGOW.setDescription("Prueba descripción larga de God of War");
@@ -78,12 +105,12 @@ public class TabContainer extends AppCompatActivity {
         fragmentTiles.setArguments(args);
         fragmentCards.setArguments(args);
 
-        adapter.addFragment(fragmentList, getString(R.string.TAB_LIST_TITLE));
-        adapter.addFragment(fragmentTiles, getString(R.string.TAB_TILES_TITLE));
-        adapter.addFragment(fragmentCards, getString(R.string.TAB_CARDS_TITLE));
+        tabsAdapter.addFragment(fragmentList, getString(R.string.TAB_LIST_TITLE));
+        tabsAdapter.addFragment(fragmentTiles, getString(R.string.TAB_TILES_TITLE));
+        tabsAdapter.addFragment(fragmentCards, getString(R.string.TAB_CARDS_TITLE));
 
         viewPager.setOffscreenPageLimit(2); // Carga todas las tabs al entrar a la aplicación. El numero viene de: (nº total tabs / 2) + 1.
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(tabsAdapter);
     }
 
     @Override
@@ -119,5 +146,69 @@ public class TabContainer extends AppCompatActivity {
         for (Category c : mCategoryList) n += c.getNumberOfBills();
 
         return n;
+    }
+
+    public void setUpDrawer(){
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem()
+                .withIdentifier(0)
+                .withName(R.string.DRAWER_OPTION_BILLS)
+                .withIcon(getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24));
+
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem()
+                .withIdentifier(1)
+                .withName(R.string.DRAWER_OPTION_CATEGORIES)
+                .withIcon(getFontAwesomeIcon(FontAwesome.Icon.faw_folder, Color.DKGRAY, 24));
+
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.primary)
+                .addProfiles(
+                        new ProfileDrawerItem()
+                                .withName("Miguel Ángel Vicente Baeza")
+                                .withEmail("miguel.vicente@goumh.umh.es")
+                                .withIcon(R.mipmap.ic_launcher_round)
+                )
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        return false;
+                    }
+                })
+                .build();
+
+        mDrawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .withAccountHeader(headerResult)
+                .addDrawerItems(
+                        item1,
+                        item2
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        switch(position){
+                            case 0:
+                                Toast.makeText(TabContainer.this, "Has presionado el botón de las facturas.", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 1:
+                                Toast.makeText(TabContainer.this, "Has presionado el botón de las categorías.", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                throw new IllegalArgumentException("The pressed button has not been recognised.");
+                        }
+                        return true;
+                    }
+                })
+                .withActionBarDrawerToggle(true)
+                .build();
+    }
+
+    public IconicsDrawable getFontAwesomeIcon(FontAwesome.Icon icon, int color, int dp){
+
+        return new IconicsDrawable(this)
+                .icon(icon)
+                .color(color)
+                .sizeDp(dp);
     }
 }

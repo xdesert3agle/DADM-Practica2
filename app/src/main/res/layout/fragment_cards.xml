@@ -3,23 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="es.dadm.practica2.fragmentCards">
 
-    <RelativeLayout
-        android:id="@+id/rlRecycler"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvBills"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/prueba"
         android:paddingLeft="8dp"
-        android:paddingTop="8dp"
-        android:paddingRight="8dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvCards"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
-        </android.support.v7.widget.RecyclerView>
-    </RelativeLayout>
+        android:paddingRight="8dp"
+        android:paddingTop="8dp" />
 </RelativeLayout>

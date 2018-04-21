@@ -2,14 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cvBill"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         card_view:cardCornerRadius="4dp"
         card_view:cardUseCompatPadding="true">
 
@@ -20,12 +20,12 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/llCardImage"
+                android:id="@+id/llBillImg"
                 android:layout_width="match_parent"
                 android:layout_height="180dp">
 
                 <ImageView
-                    android:id="@+id/ivFactura"
+                    android:id="@+id/ivBillImg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -33,7 +33,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llCardFields"
+                android:id="@+id/llBillFields"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
