@@ -1,5 +1,6 @@
 package es.dadm.practica2;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -45,19 +46,19 @@ public class TabContainer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.tab_container);
+        setContentView(R.layout.activity_tab_container);
 
         ButterKnife.bind(this);
 
         setUpViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        // Sets the Activity title to 'My bills (amount)'
+        // Escribe el número de facturas existentes en el título de la Toolbar
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), getTotalBills()));
 
         setUpDrawer();
-
+        //startActivity(new Intent(TabContainer.this, RegisterBill.class));
         /*ActionBarDrawerToggle toggle =
 
         mDrawerMenu.addDrawerListener(toggle);
@@ -83,13 +84,13 @@ public class TabContainer extends AppCompatActivity {
         facturaPS4.setId(1);
         facturaPS4.setAmount(299);
         facturaPS4.setTitle("PS4 Slim (1 TB)");
-        facturaPS4.setDescription("Prueba descripción larga de PS4");
+        facturaPS4.setDescription("RegisterBill descripción larga de PS4");
 
         Bill facturaGOW = new Bill();
         facturaGOW.setId(2);
         facturaGOW.setAmount(60);
         facturaGOW.setTitle("God Of War");
-        facturaGOW.setDescription("Prueba descripción larga de God of War");
+        facturaGOW.setDescription("RegisterBill descripción larga de God of War");
 
         videogames.getBillList().add(facturaPS4);
         videogames.getBillList().add(facturaGOW);
@@ -109,7 +110,7 @@ public class TabContainer extends AppCompatActivity {
         tabsAdapter.addFragment(fragmentTiles, getString(R.string.TAB_TILES_TITLE));
         tabsAdapter.addFragment(fragmentCards, getString(R.string.TAB_CARDS_TITLE));
 
-        viewPager.setOffscreenPageLimit(2); // Carga todas las tabs al entrar a la aplicación. El numero viene de: (nº total tabs / 2) + 1.
+        viewPager.setOffscreenPageLimit(2); // Carga todas las tabs al entrar a la aplicación. El parámetro se calcula de: (nº total tabs / 2) + 1.
         viewPager.setAdapter(tabsAdapter);
     }
 
@@ -130,11 +131,11 @@ public class TabContainer extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
-            case R.id.addBill: // Register a new bill button
-                Toast.makeText(this, "Register a bill", Toast.LENGTH_SHORT).show();
+            case R.id.addBill: // Registrar una factura nueva
+                startActivity(new Intent(TabContainer.this, RegisterBill.class));
                 break;
             default:
-                throw new IllegalArgumentException("The pressed button has not been recognised.");
+                throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
         }
 
         return super.onOptionsItemSelected(item);

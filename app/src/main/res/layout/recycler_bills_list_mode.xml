@@ -32,7 +32,7 @@
             android:id="@+id/tvLongDesc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Descripción larga de la tarjeta. ayer me coasfasfasfasfaf"
+            android:text="Descripción larga de la tarjeta."
             android:maxLines="1"
             android:textSize="14sp" />
 

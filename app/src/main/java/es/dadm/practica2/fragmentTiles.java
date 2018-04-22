@@ -17,7 +17,7 @@ public class fragmentTiles extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tiles, container, false);
+        View view = inflater.inflate(R.layout.fragment_bills_tile_mode, container, false);
 
         return view;
     }

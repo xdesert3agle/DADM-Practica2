@@ -29,7 +29,7 @@ public class fragmentCards extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cards, container, false);
+        View view = inflater.inflate(R.layout.fragment_bills_card_mode, container, false);
         ButterKnife.bind(this, view);
 
         mCategoryList = getArguments().getParcelableArrayList(BUNDLE_BILL_LIST);

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.adapters.CardAdapter;
 import es.dadm.practica2.adapters.ListAdapter;
 
 public class fragmentList extends Fragment {
@@ -30,7 +29,7 @@ public class fragmentList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_bills_list_mode, container, false);
         ButterKnife.bind(this, view);
 
         mCategoryList = getArguments().getParcelableArrayList(BUNDLE_BILL_LIST);
