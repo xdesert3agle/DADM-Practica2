@@ -3,19 +3,28 @@ package es.dadm.practica2;
 import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.List;
+
 import butterknife.BindView;
-import pub.devrel.easypermissions.EasyPermissions;
+import butterknife.ButterKnife;
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class RegisterBill extends AppCompatActivity {
     @BindView(R.id.ivBillImg) ImageView ivBillImg;
@@ -28,55 +37,38 @@ public class RegisterBill extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_bill);
 
+        ButterKnife.bind(this);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Registrar nueva factura");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        if (EasyPermissions.hasPermissions(this, galleryPermissions)) {
-            startActivityForResult(intent, PICK_IMAGE);
-        } else {
-            EasyPermissions.requestPermissions(this, "Access for storage",
-                    101, galleryPermissions);
-        }
-
-
-
+        EasyImage.openGallery(this, 0);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE){
-            switch (resultCode) {
-                case -1:
-                    Toast.makeText(this, "Imagen escogida correctamente.", Toast.LENGTH_SHORT).show();
-
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-                    Cursor cursor = getContentResolver().query(selectedImage,
-                            filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String picturePath = cursor.getString(columnIndex);
-                    cursor.close();
-
-                    ImageView imageView = findViewById(R.id.ivBillImg);
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
-                    break;
-                case 0:
-                    Toast.makeText(this, "Por favor, escoge una imagen de la galería.", Toast.LENGTH_SHORT).show();
-                    this.finish();
-                    break;
-                default:
-                    throw new IllegalArgumentException("No se ha podido resolver la acción de pedir una imagen.");
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                Toast.makeText(RegisterBill.this, "Ha habido un error al procesar la imagen.", Toast.LENGTH_SHORT).show();
             }
 
-        }
+            @Override
+            public void onImagesPicked(List<File> imagesFiles, EasyImage.ImageSource source, int type) {
+                Toast.makeText(RegisterBill.this, "Imagen seleccionada correctamente", Toast.LENGTH_SHORT).show();
+
+                Bitmap myBitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getAbsolutePath());
+                ivBillImg.setImageBitmap(myBitmap);
+            }
+
+            @Override
+            public void onCanceled(EasyImage.ImageSource source, int type) {
+                super.onCanceled(source, type);
+                finish();
+                Toast.makeText(RegisterBill.this, "Debes escoger una imagen", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
