@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class RegisterBill extends AppCompatActivity {
     @BindView(R.id.ivBillImg) ImageView ivBillImg;
+    @BindView(R.id.btnCreateBill) Button btnCreateBill;
 
     public static final int PICK_IMAGE = 1;
     private String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -44,6 +46,13 @@ public class RegisterBill extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         EasyImage.openGallery(this, 0);
+
+        btnCreateBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

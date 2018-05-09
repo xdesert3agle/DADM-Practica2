@@ -1,6 +1,8 @@
 package es.dadm.practica2;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -36,6 +38,8 @@ public class TabContainer extends AppCompatActivity {
     @BindView(R.id.tlTabs) TabLayout mTabLayout;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
+    public static final String DATABASE_NAME = "BDTickets.db";
+
     private Drawer mDrawer;
 
     private List<Category> mCategoryList = new ArrayList<>();
@@ -49,6 +53,9 @@ public class TabContainer extends AppCompatActivity {
         setContentView(R.layout.activity_tab_container);
 
         ButterKnife.bind(this);
+
+        DataHelper dataHelper = new DataHelper(this);
+
 
         setUpViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);

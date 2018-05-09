@@ -19,7 +19,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="64dp"
         android:gravity="bottom"
         android:layout_weight="1"
         android:layout_gravity="bottom">
@@ -42,6 +42,12 @@
             app:met_minBottomTextLines="2"
             android:hint="Descripción" />
 
+        <Button
+            android:id="@+id/btnCreateBill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Añadir factura"
+            android:layout_gravity="center" />
     </LinearLayout>
 
 </LinearLayout>
