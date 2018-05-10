@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +19,7 @@ import es.dadm.practica2.adapters.ListAdapter;
 
 public class fragmentList extends Fragment {
     @BindView(R.id.rvBills)RecyclerView mRecycler;
-    ArrayList<Category> mCategoryList;
+    ArrayList<Ticket> mTicketList;
 
     private static final String BUNDLE_BILL_LIST = "Ticket list";
 
@@ -32,11 +34,11 @@ public class fragmentList extends Fragment {
         View view = inflater.inflate(R.layout.fragment_bills_list_mode, container, false);
         ButterKnife.bind(this, view);
 
-        mCategoryList = getArguments().getParcelableArrayList(BUNDLE_BILL_LIST);
+        mTicketList = getArguments().getParcelableArrayList(BUNDLE_BILL_LIST);
 
         // TODO: Imprimir por orden alfabético de categorías.
         // TODO: Cambiar el adapter para que imprima todo el array de categorías por orden alfabético
-        mRecycler.setAdapter(new ListAdapter((ArrayList) mCategoryList.get(0).getTicketList(), getActivity()));
+        mRecycler.setAdapter(new ListAdapter(mTicketList, getActivity()));
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;

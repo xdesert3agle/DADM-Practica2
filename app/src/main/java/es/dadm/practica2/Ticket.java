@@ -11,7 +11,7 @@ public class Ticket implements Parcelable{
     private int id;
     private String title;
     private String description;
-    private Category category;
+    private String category;
     private int amount;
     private Date date;
     private String photoFileName;
@@ -86,11 +86,11 @@ public class Ticket implements Parcelable{
         this.description = description;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -116,7 +116,7 @@ public class Ticket implements Parcelable{
         dest.writeLong(date.getTime());
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeString(description);
+        dest.writeString(category);
     }
 
     private void readFromParcel(Parcel source) {
@@ -126,6 +126,7 @@ public class Ticket implements Parcelable{
         date = new Date(source.readLong());
         title = source.readString();
         description = source.readString();
+        category = source.readString();
     }
 
     public static final Creator<Ticket> CREATOR = new Creator<Ticket>() {

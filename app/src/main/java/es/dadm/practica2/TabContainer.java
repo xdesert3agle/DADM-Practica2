@@ -63,7 +63,6 @@ public class TabContainer extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), getTotalTickets()));
 
-
         setUpDrawer();
 
         //startActivity(new Intent(TabContainer.this, RegisterBill.class));
@@ -135,29 +134,11 @@ public class TabContainer extends AppCompatActivity {
         //Abrimos la base de datos 'bdpeliculas' en modo escritura
         TicketSQLiteHelper ticketHelper = new TicketSQLiteHelper(this, null, 1);
 
-        Ticket ticket;
-
-        for (int i = 0; i < 4; i++) {
-            ticket = new Ticket();
-
-            /* Asignamos todos los campos menos la fecha, ya que esta se crea y se asigna automáticamente
-            en el constructor de 'Ticket' */
-            ticket.setPhotoFileName("Filename " + i);
-            ticket.setAmount(i * 2);
-            ticket.setTitle("Ticket " + i);
-            ticket.setDescription("Descripción del ticket " + i);
-            ticketHelper.insertTicket(ticket);
-        }
-
         mTicketList = ticketHelper.getTicketsFromBD();
     }
 
     public int getTotalTickets(){
-        int n = 0;
-
-        for (Ticket t : mTicketList) n++;
-
-        return n;
+        return mTicketList.size();
     }
 
     public void setUpDrawer(){

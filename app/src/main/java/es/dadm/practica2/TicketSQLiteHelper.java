@@ -15,9 +15,8 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "BDTickets.db";
     private static final int DB_VERSION = 1;
-    private static final String TABLE_NAME = "Facturas";
-    //private static final String[] COLUMNAS = {"_id", "FOTO", "CATEGORÍA", "PRECIO", "FECHA", "DESC_CORTA", "DESC_LARGA"};
-    private static final String[] COLUMNAS = {"_id", "FOTO", "PRECIO", "FECHA", "DESC_CORTA", "DESC_LARGA"};
+    private static final String TABLE_NAME = "Ticket";
+    private static final String[] COLUMNAS = {"_id", "FOTO", "CATEGORIA", "PRECIO", "FECHA", "DESC_CORTA", "DESC_LARGA"};
 
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -29,21 +28,24 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
             COLUMNAS[2] + ", " +
             COLUMNAS[3] + ", " +
             COLUMNAS[4] + ", " +
-            COLUMNAS[5] + ")" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+            COLUMNAS[5] + ", " +
+            COLUMNAS[6] + ")" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     //Sentencia SQL para crear la tabla de Tickets
     private static final String CREATE_DB = "CREATE TABLE " + TABLE_NAME +
             "(" + COLUMNAS[0] + " INTEGER PRIMARY KEY, " +
             COLUMNAS[1] + " TEXT, " +
-            //COLUMNAS[2] + " INTEGER NOT NULL, " +
-            COLUMNAS[2] + " DOUBLE NOT NULL, " +
-            COLUMNAS[3] + " LONG NOT NULL, " +
-            COLUMNAS[4] + " TEXT NOT NULL, " +
-            COLUMNAS[5] + " TEXT NOT NULL)";
-
+            COLUMNAS[2] + " INTEGER NOT NULL, " +
+            COLUMNAS[3] + " DOUBLE NOT NULL, " +
+            COLUMNAS[4] + " LONG NOT NULL, " +
+            COLUMNAS[5] + " TEXT NOT NULL, " +
+            COLUMNAS[6] + " TEXT NOT NULL)";
 
     public TicketSQLiteHelper(Context contexto, SQLiteDatabase.CursorFactory factory, int version) {
         super(contexto, DB_NAME, factory, DB_VERSION);
+        for (int i = 0; i < COLUMNAS.length; i++){
+            Log.d("Columna " + i, COLUMNAS[i]);
+        }
     }
 
     @Override
@@ -69,7 +71,7 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
         //Abrimos la base de datos 'bdpeliculas' en modo escritura
         db = getWritableDatabase();
 
-        cursor = db.query("Peliculas", COLUMNAS, "", null, null, null, null);
+        cursor = db.query(TABLE_NAME, COLUMNAS, "", null, null, null, null);
 
         List<Ticket> ticketArray = new ArrayList<>();
         Ticket Ticket;
@@ -105,10 +107,11 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
 
         ticket.setId(cursor.getInt(0));
         ticket.setPhotoFileName(cursor.getString(1));
-        ticket.setAmount(cursor.getInt(2));
+        ticket.setCategory(cursor.getString(2));
+        ticket.setAmount(cursor.getInt(3));
         // No asignamos la fecha, ya que se crea y se asigna automáticamente en el constructor de 'Ticket'
-        ticket.setTitle(cursor.getString(4));
-        ticket.setDescription(cursor.getString(5));
+        ticket.setTitle(cursor.getString(5));
+        ticket.setDescription(cursor.getString(6));
 
         return ticket;
     }
@@ -120,11 +123,12 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
     private ContentValues asignarValores(Ticket ticket){
         ContentValues newRegistry = new ContentValues();
 
-        newRegistry.put("FOTO",ticket.getPhotoFileName());
-        newRegistry.put("PRECIO",ticket.getAmount());
-        newRegistry.put("FECHA",ticket.getFormatedDate());
-        newRegistry.put("DESC_CORTA",ticket.getTitle());
-        newRegistry.put("DESC_LARGA",ticket.getDescription());
+        newRegistry.put(COLUMNAS[1],ticket.getPhotoFileName());
+        newRegistry.put(COLUMNAS[2],ticket.getCategory());
+        newRegistry.put(COLUMNAS[3],ticket.getAmount());
+        newRegistry.put(COLUMNAS[4],ticket.getFormatedDate());
+        newRegistry.put(COLUMNAS[5],ticket.getTitle());
+        newRegistry.put(COLUMNAS[6],ticket.getDescription());
 
         return newRegistry;
     }
