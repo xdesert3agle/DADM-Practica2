@@ -4,13 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Category implements Parcelable{
     private String title;
     private String description;
-    private List<Bill> billList = new ArrayList<>();
+    private List<Ticket> TicketList = new ArrayList<>();
 
     public Category(){}
 
@@ -34,8 +33,8 @@ public class Category implements Parcelable{
         this.description = description;
     }
 
-    public List<Bill> getBillList() {
-        return billList;
+    public List<Ticket> getTicketList() {
+        return TicketList;
     }
 
     // MÉTODOS PARCELABLE
@@ -48,14 +47,14 @@ public class Category implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeTypedList(billList);
+        dest.writeTypedList(TicketList);
     }
 
     private void readFromParcel(Parcel source) {
         title = source.readString();
         description = source.readString();
-        billList = new ArrayList<Bill>();
-        source.readTypedList(billList, Bill.CREATOR);
+        TicketList = new ArrayList<Ticket>();
+        source.readTypedList(TicketList, Ticket.CREATOR);
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {
@@ -71,6 +70,6 @@ public class Category implements Parcelable{
     };
 
     public int getNumberOfBills(){
-        return billList.size();
+        return TicketList.size();
     }
 }

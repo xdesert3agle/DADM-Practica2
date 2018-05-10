@@ -7,19 +7,20 @@ import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Bill implements Parcelable{
+public class Ticket implements Parcelable{
     private int id;
     private String title;
     private String description;
+    private Category category;
     private int amount;
     private Date date;
     private String photoFileName;
 
-    public Bill(Parcel source){
+    public Ticket(Parcel source){
         readFromParcel(source);
     }
 
-    public Bill(){
+    public Ticket(){
         this.date = new Date();
     }
 
@@ -85,6 +86,14 @@ public class Bill implements Parcelable{
         this.description = description;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public void printInfo(){
         Log.d("ID", String.valueOf(this.id));
         Log.d("Importe", String.valueOf(this.amount));
@@ -107,6 +116,7 @@ public class Bill implements Parcelable{
         dest.writeLong(date.getTime());
         dest.writeString(title);
         dest.writeString(description);
+        dest.writeString(description);
     }
 
     private void readFromParcel(Parcel source) {
@@ -118,15 +128,15 @@ public class Bill implements Parcelable{
         description = source.readString();
     }
 
-    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
+    public static final Creator<Ticket> CREATOR = new Creator<Ticket>() {
         @Override
-        public Bill createFromParcel(Parcel in) {
-            return new Bill(in);
+        public Ticket createFromParcel(Parcel in) {
+            return new Ticket(in);
         }
 
         @Override
-        public Bill[] newArray(int size) {
-            return new Bill[size];
+        public Ticket[] newArray(int size) {
+            return new Ticket[size];
         }
     };
 }

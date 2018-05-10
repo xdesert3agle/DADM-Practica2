@@ -11,15 +11,15 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.Bill;
+import es.dadm.practica2.Ticket;
 import es.dadm.practica2.R;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>{
-    private ArrayList<Bill> mBillList;
+    private ArrayList<Ticket> mTicketList;
     private final Context mContext;
 
-    public ListAdapter(ArrayList<Bill> billList, Context context){
-        this.mBillList = billList;
+    public ListAdapter(ArrayList<Ticket> TicketList, Context context){
+        this.mTicketList = TicketList;
         this.mContext = context;
     }
 
@@ -41,14 +41,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
 
     @Override
     public void onBindViewHolder(ListViewHolder holder, int position) {
-        Bill bill = mBillList.get(position);
+        Ticket Ticket = mTicketList.get(position);
 
-        holder.tvTitle.setText(bill.getTitle());
-        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TAB_CARDS_BILL_PRICE), bill.getAmount()));
+        holder.tvTitle.setText(Ticket.getTitle());
+        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TAB_CARDS_BILL_PRICE), Ticket.getAmount()));
     }
 
     @Override
     public int getItemCount() {
-        return mBillList.size();
+        return mTicketList.size();
     }
 }

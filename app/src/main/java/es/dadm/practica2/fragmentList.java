@@ -19,7 +19,7 @@ public class fragmentList extends Fragment {
     @BindView(R.id.rvBills)RecyclerView mRecycler;
     ArrayList<Category> mCategoryList;
 
-    private static final String BUNDLE_BILL_LIST = "Bill list";
+    private static final String BUNDLE_BILL_LIST = "Ticket list";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class fragmentList extends Fragment {
 
         // TODO: Imprimir por orden alfabético de categorías.
         // TODO: Cambiar el adapter para que imprima todo el array de categorías por orden alfabético
-        mRecycler.setAdapter(new ListAdapter((ArrayList) mCategoryList.get(0).getBillList(), getActivity()));
+        mRecycler.setAdapter(new ListAdapter((ArrayList) mCategoryList.get(0).getTicketList(), getActivity()));
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;

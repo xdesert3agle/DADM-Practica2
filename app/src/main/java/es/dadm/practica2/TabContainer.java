@@ -1,14 +1,13 @@
 package es.dadm.practica2;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,9 +41,9 @@ public class TabContainer extends AppCompatActivity {
 
     private Drawer mDrawer;
 
-    private List<Category> mCategoryList = new ArrayList<>();
+    private List<Ticket> mTicketList = new ArrayList<>();
 
-    private static final String BUNDLE_BILL_LIST = "Bill list";
+    private static final String BUNDLE_BILL_LIST = "Ticket list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +53,19 @@ public class TabContainer extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        DataHelper dataHelper = new DataHelper(this);
-
+        TicketSQLiteHelper TicketHelper = new TicketSQLiteHelper(this, null, 1);
+        loadTicketsFromDB();
 
         setUpViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
 
         // Escribe el número de facturas existentes en el título de la Toolbar
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), getTotalBills()));
+        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), getTotalTickets()));
+
 
         setUpDrawer();
+
         //startActivity(new Intent(TabContainer.this, RegisterBill.class));
         /*ActionBarDrawerToggle toggle =
 
@@ -84,26 +85,8 @@ public class TabContainer extends AppCompatActivity {
     private void setUpViewPager(ViewPager viewPager){
         TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager());
 
-        Category videogames = new Category();
-        mCategoryList.add(videogames);
-
-        Bill facturaPS4 = new Bill();
-        facturaPS4.setId(1);
-        facturaPS4.setAmount(299);
-        facturaPS4.setTitle("PS4 Slim (1 TB)");
-        facturaPS4.setDescription("RegisterBill descripción larga de PS4");
-
-        Bill facturaGOW = new Bill();
-        facturaGOW.setId(2);
-        facturaGOW.setAmount(60);
-        facturaGOW.setTitle("God Of War");
-        facturaGOW.setDescription("RegisterBill descripción larga de God of War");
-
-        videogames.getBillList().add(facturaPS4);
-        videogames.getBillList().add(facturaGOW);
-
         Bundle args = new Bundle();
-        args.putParcelableArrayList(BUNDLE_BILL_LIST, (ArrayList) mCategoryList);
+        args.putParcelableArrayList(BUNDLE_BILL_LIST, (ArrayList) mTicketList);
 
         fragmentList fragmentList = new fragmentList();
         fragmentTiles fragmentTiles = new fragmentTiles();
@@ -148,10 +131,31 @@ public class TabContainer extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public int getTotalBills(){
+    private void loadTicketsFromDB() {
+        //Abrimos la base de datos 'bdpeliculas' en modo escritura
+        TicketSQLiteHelper ticketHelper = new TicketSQLiteHelper(this, null, 1);
+
+        Ticket ticket;
+
+        for (int i = 0; i < 4; i++) {
+            ticket = new Ticket();
+
+            /* Asignamos todos los campos menos la fecha, ya que esta se crea y se asigna automáticamente
+            en el constructor de 'Ticket' */
+            ticket.setPhotoFileName("Filename " + i);
+            ticket.setAmount(i * 2);
+            ticket.setTitle("Ticket " + i);
+            ticket.setDescription("Descripción del ticket " + i);
+            ticketHelper.insertTicket(ticket);
+        }
+
+        mTicketList = ticketHelper.getTicketsFromBD();
+    }
+
+    public int getTotalTickets(){
         int n = 0;
 
-        for (Category c : mCategoryList) n += c.getNumberOfBills();
+        for (Ticket t : mTicketList) n++;
 
         return n;
     }
