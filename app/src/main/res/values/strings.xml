@@ -1,17 +1,30 @@
 <resources>
     <string name="app_name">Practica2</string>
 
-    <string name="TAB_CONTAINER_TITLE">Mis facturas (%1$d)</string>
-
-    <string name="TAB_LIST_TITLE">Lista</string>
-
-    <string name="TAB_TILES_TITLE">Mosaico</string>
-
-    <string name="TAB_CARDS_TITLE">Tarjetas</string>
-    <string name="TAB_CARDS_BILL_PRICE">%1$d €</string>
-
     <!-- DRAWER MENU -->
     <string name="DRAWER_OPTION_BILLS">Facturas</string>
     <string name="DRAWER_OPTION_CATEGORIES">Categorías</string>
+    <string name="DRAWER_OPTION_SETTINGS">Settings</string>
 
+    <!-- TAB CONTAINER -->
+    <string name="TAB_CONTAINER_TITLE">Mis facturas (%1$d)</string>
+    <string name="TAB_LIST_TITLE">Lista</string>
+    <string name="TAB_TILES_TITLE">Mosaico</string>
+    <string name="TAB_CARDS_TITLE">Tarjetas</string>
+
+    <!-- TICKET FIELDS -->
+    <string name="TICKET_TITLE">Título del ticket</string>
+    <string name="TICKET_DESC">Descripción del ticket</string>
+    <string name="TICKET_PRICE">%1$.2f €</string>
+
+    <!-- ADD TICKET -->
+    <string name="ADD_TICKET_TITLE">Nuevo ticket</string>
+
+    <string-array name="size_entries">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
 </resources>
+
+

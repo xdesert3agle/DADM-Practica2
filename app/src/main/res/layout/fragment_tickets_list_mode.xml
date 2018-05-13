@@ -3,13 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="es.dadm.practica2.fragmentCards">
+    tools:context="es.dadm.practica2.fragmentList">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvBills"
+        android:id="@+id/rvTickets"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp" />
+        android:layout_height="wrap_content" />
 </RelativeLayout>

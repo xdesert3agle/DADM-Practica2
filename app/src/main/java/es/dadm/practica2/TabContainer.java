@@ -37,13 +37,10 @@ public class TabContainer extends AppCompatActivity {
     @BindView(R.id.tlTabs) TabLayout mTabLayout;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
-    public static final String DATABASE_NAME = "BDTickets.db";
-
     private Drawer mDrawer;
 
+    TicketSQLiteHelper mTicketDB;
     private List<Ticket> mTicketList = new ArrayList<>();
-
-    private static final String BUNDLE_BILL_LIST = "Ticket list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +49,8 @@ public class TabContainer extends AppCompatActivity {
         setContentView(R.layout.activity_tab_container);
 
         ButterKnife.bind(this);
+        mTicketDB = TicketSQLiteHelper.getInstance();
 
-        TicketSQLiteHelper TicketHelper = new TicketSQLiteHelper(this, null, 1);
         loadTicketsFromDB();
 
         setUpViewPager(mViewPager);
@@ -64,42 +61,20 @@ public class TabContainer extends AppCompatActivity {
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), getTotalTickets()));
 
         setUpDrawer();
-
-        //startActivity(new Intent(TabContainer.this, RegisterBill.class));
-        /*ActionBarDrawerToggle toggle =
-
-        mDrawerMenu.addDrawerListener(toggle);
-        toggle.syncState();*/
     }
 
-    /*@Override
-    public void onBackPressed() {
-        if (mDrawerMenu.isDrawerOpen(GravityCompat.START)){
-            mDrawerMenu.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }*/
-
-    private void setUpViewPager(ViewPager viewPager){
+    private void setUpViewPager(ViewPager viewPager) {
         TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager());
-
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(BUNDLE_BILL_LIST, (ArrayList) mTicketList);
 
         fragmentList fragmentList = new fragmentList();
         fragmentTiles fragmentTiles = new fragmentTiles();
         fragmentCards fragmentCards = new fragmentCards();
 
-        fragmentList.setArguments(args);
-        fragmentTiles.setArguments(args);
-        fragmentCards.setArguments(args);
-
         tabsAdapter.addFragment(fragmentList, getString(R.string.TAB_LIST_TITLE));
         tabsAdapter.addFragment(fragmentTiles, getString(R.string.TAB_TILES_TITLE));
         tabsAdapter.addFragment(fragmentCards, getString(R.string.TAB_CARDS_TITLE));
 
-        viewPager.setOffscreenPageLimit(2); // Carga todas las tabs al entrar a la aplicación. El parámetro se calcula de: (nº total tabs / 2) + 1.
+        viewPager.setOffscreenPageLimit(2); // Carga todas las tabs al entrar a la aplicación.
         viewPager.setAdapter(tabsAdapter);
     }
 
@@ -119,9 +94,9 @@ public class TabContainer extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.addBill: // Registrar una factura nueva
-                startActivity(new Intent(TabContainer.this, RegisterBill.class));
+                startActivity(new Intent(TabContainer.this, AddTicket.class));
                 break;
             default:
                 throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
@@ -131,17 +106,14 @@ public class TabContainer extends AppCompatActivity {
     }
 
     private void loadTicketsFromDB() {
-        //Abrimos la base de datos 'bdpeliculas' en modo escritura
-        TicketSQLiteHelper ticketHelper = new TicketSQLiteHelper(this, null, 1);
-
-        mTicketList = ticketHelper.getTicketsFromBD();
+        mTicketList = mTicketDB.getTicketsFromBD();
     }
 
-    public int getTotalTickets(){
+    public int getTotalTickets() {
         return mTicketList.size();
     }
 
-    public void setUpDrawer(){
+    public void setUpDrawer() {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem()
                 .withIdentifier(0)
                 .withName(R.string.DRAWER_OPTION_BILLS)
@@ -180,7 +152,7 @@ public class TabContainer extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch(position){
+                        switch (position) {
                             case 0:
                                 Toast.makeText(TabContainer.this, "Has presionado el botón de las facturas.", Toast.LENGTH_SHORT).show();
                                 break;
@@ -197,7 +169,7 @@ public class TabContainer extends AppCompatActivity {
                 .build();
     }
 
-    public IconicsDrawable getFontAwesomeIcon(FontAwesome.Icon icon, int color, int dp){
+    public IconicsDrawable getFontAwesomeIcon(FontAwesome.Icon icon, int color, int dp) {
 
         return new IconicsDrawable(this)
                 .icon(icon)

@@ -12,7 +12,7 @@ public class Ticket implements Parcelable{
     private String title;
     private String description;
     private String category;
-    private int amount;
+    private double price;
     private Date date;
     private String photoFileName;
 
@@ -23,7 +23,6 @@ public class Ticket implements Parcelable{
     public Ticket(){
         this.date = new Date();
     }
-
 
     public int getId() {
         return id;
@@ -41,12 +40,12 @@ public class Ticket implements Parcelable{
         this.photoFileName = photoFileName;
     }
 
-    public int getAmount() {
-        return amount;
+    public double getPrice() {
+        return price;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public Date getDate(){
@@ -96,7 +95,7 @@ public class Ticket implements Parcelable{
 
     public void printInfo(){
         Log.d("ID", String.valueOf(this.id));
-        Log.d("Importe", String.valueOf(this.amount));
+        Log.d("Importe", String.valueOf(this.price));
         Log.d("Fecha de creación", getFormatedDate());
         Log.d("Descripción corta", this.title);
         Log.d("Descripción larga", this.description);
@@ -112,7 +111,7 @@ public class Ticket implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(photoFileName);
-        dest.writeInt(amount);
+        dest.writeDouble(price);
         dest.writeLong(date.getTime());
         dest.writeString(title);
         dest.writeString(description);
@@ -122,7 +121,7 @@ public class Ticket implements Parcelable{
     private void readFromParcel(Parcel source) {
         id = source.readInt();
         photoFileName = source.readString();
-        amount = source.readInt();
+        price = source.readDouble();
         date = new Date(source.readLong());
         title = source.readString();
         description = source.readString();

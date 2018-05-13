@@ -7,24 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.Ticket;
 import es.dadm.practica2.R;
+import es.dadm.practica2.Ticket;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>{
-    private ArrayList<Ticket> mTicketList;
+    private List<Ticket> mTicketList;
     private final Context mContext;
 
-    public ListAdapter(ArrayList<Ticket> TicketList, Context context){
+    public ListAdapter(List<Ticket> TicketList, Context context){
         this.mTicketList = TicketList;
         this.mContext = context;
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvTitle) TextView tvTitle;
+        @BindView(R.id.tvDescription) TextView tvDescription;
         @BindView(R.id.tvPrice) TextView tvPrice;
 
         ListViewHolder(View itemView) {
@@ -35,7 +36,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
 
     @Override
     public ListViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_bills_list_mode, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_tickets_list_mode, viewGroup, false);
         return new ListViewHolder(v);
     }
 
@@ -44,11 +45,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         Ticket Ticket = mTicketList.get(position);
 
         holder.tvTitle.setText(Ticket.getTitle());
-        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TAB_CARDS_BILL_PRICE), Ticket.getAmount()));
+        holder.tvDescription.setText(Ticket.getDescription());
+        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), Ticket.getPrice()));
     }
 
     @Override
     public int getItemCount() {
         return mTicketList.size();
+    }
+
+    public void setContent(List<Ticket> newTicketList){
+        mTicketList = newTicketList;
     }
 }

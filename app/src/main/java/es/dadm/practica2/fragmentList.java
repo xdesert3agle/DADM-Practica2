@@ -9,19 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dadm.practica2.adapters.CardAdapter;
 import es.dadm.practica2.adapters.ListAdapter;
 
 public class fragmentList extends Fragment {
-    @BindView(R.id.rvBills)RecyclerView mRecycler;
-    ArrayList<Ticket> mTicketList;
-
-    private static final String BUNDLE_BILL_LIST = "Ticket list";
+    @BindView(R.id.rvTickets) RecyclerView mRecycler;
+    ListAdapter mAdapter;
+    List<Ticket> mTicketList;
+    TicketSQLiteHelper mTicketDB;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,16 +30,37 @@ public class fragmentList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_bills_list_mode, container, false);
+        View view = inflater.inflate(R.layout.fragment_tickets_list_mode, container, false);
         ButterKnife.bind(this, view);
 
-        mTicketList = getArguments().getParcelableArrayList(BUNDLE_BILL_LIST);
+        mTicketDB = TicketSQLiteHelper.getInstance();
+        mTicketList = mTicketDB.getTicketsFromBD();
 
-        // TODO: Imprimir por orden alfabético de categorías.
-        // TODO: Cambiar el adapter para que imprima todo el array de categorías por orden alfabético
-        mRecycler.setAdapter(new ListAdapter(mTicketList, getActivity()));
+        mAdapter = new ListAdapter(mTicketList, getActivity());
+        mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        refreshTicketList();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser && mTicketDB != null) {
+            refreshTicketList();
+        }
+    }
+
+    public void refreshTicketList(){
+        mTicketList = mTicketDB.getTicketsFromBD();
+        mAdapter.setContent(mTicketList);
     }
 }
