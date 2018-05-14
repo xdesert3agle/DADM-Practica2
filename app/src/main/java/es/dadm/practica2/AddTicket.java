@@ -4,10 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,15 +29,14 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class AddTicket extends AppCompatActivity {
     @BindView(R.id.ivTicketImg) ImageView ivTicketImg;
-    @BindView(R.id.fabPhotoFromGallery) FloatingActionButton fabAddPhoto;
+    @BindView(R.id.fabPhotoFromGallery) FloatingActionButton fabPhotoFromGallery;
+    @BindView(R.id.fabPhotoFromCamera) FloatingActionButton fabPhotoFromCamera;
     @BindView(R.id.etTitle) EditText etTitle;
     @BindView(R.id.etDescription) EditText etDescription;
     @BindView(R.id.etPrice) EditText etPrice;
     @BindView(R.id.spCategories) Spinner spCategories;
     @BindView(R.id.btnCreateTicket) Button btnCreateTicket;
-
-    static final int PICK_IMAGE = 1;
-    String[] galleryPermissions = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    @BindView(R.id.toolbar) Toolbar mToolbar;
 
     TicketDB mTicketDB;
     File mTicketImgFile;
@@ -45,11 +48,14 @@ public class AddTicket extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getResources().getString(R.string.ADD_TICKET_TITLE));
-        setSupportActionBar(toolbar);
+        mToolbar.setTitle(getResources().getString(R.string.ADD_TICKET_TITLE));
+        setSupportActionBar(mToolbar);
+
+        fabPhotoFromGallery.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_image, Color.WHITE, 26, AddTicket.this));
+        fabPhotoFromCamera.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_camera, Color.WHITE, 26, AddTicket.this));
 
         mTicketDB = TicketDB.getInstance();
+
 
         btnCreateTicket.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,12 +68,20 @@ public class AddTicket extends AppCompatActivity {
             }
         });
 
-        fabAddPhoto.setOnClickListener(new View.OnClickListener() {
+        fabPhotoFromGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EasyImage.openGallery(AddTicket.this, 0);
             }
         });
+
+        fabPhotoFromCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EasyImage.openCamera(AddTicket.this, 0);
+            }
+        });
+
     }
 
     @Override
@@ -85,8 +99,10 @@ public class AddTicket extends AppCompatActivity {
                 mTicketImgFile = imagesFiles.get(0);
                 Bitmap bmTicketImg = BitmapFactory.decodeFile(mTicketImgFile.getAbsolutePath());
 
+                Log.d("Ruta en AddTicket", mTicketImgFile.getAbsolutePath());
+
                 // Se guarda la imagen en la memoria externa del teléfono
-                ImageUtilities.saveImage(bmTicketImg, mTicketImgFile.getName(), AddTicket.this);
+                ImgUtil.saveImage(bmTicketImg, mTicketImgFile.getName(), AddTicket.this);
 
                 // Se pone la imagen en el formulario
                 ivTicketImg.setImageBitmap(bmTicketImg);

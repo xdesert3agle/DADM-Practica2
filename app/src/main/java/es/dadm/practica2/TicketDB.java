@@ -6,18 +6,13 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
-import java.lang.Math.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class TicketDB extends SQLiteOpenHelper {
-
     private static TicketDB instance = null;
-
-    private Context context;
 
     private static final String DB_NAME = "BDTickets.db";
     private static final int DB_VERSION = 1;
@@ -34,15 +29,6 @@ public class TicketDB extends SQLiteOpenHelper {
     private SQLiteDatabase db;
     private Cursor cursor;
 
-    private static final String INSERT_QUERY = "INSERT INTO " + TABLE_NAME + "(" +
-            COL_ID + ", " +
-            COL_CATEGORY_ID + ", " +
-            COL_TITLE + ", " +
-            COL_DESCRIPTION + ", " +
-            COL_PRICE + ", " +
-            COL_DATE + ", " +
-            COL_PHOTO + ")" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
-
     //Sentencia SQL para crear la tabla de Tickets
     private static final String CREATE_DB = "CREATE TABLE " + TABLE_NAME +
             "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -55,10 +41,9 @@ public class TicketDB extends SQLiteOpenHelper {
 
     private TicketDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-        this.context = context;
     }
 
-    public static void passContext(Context context){
+    public static void init(Context context){
         if (instance == null){
             instance = new TicketDB(context);
         }
@@ -70,51 +55,49 @@ public class TicketDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //Se ejecuta la sentencia SQL de creación de la tabla
         db.execSQL(CREATE_DB);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int versionAnterior, int versionNueva) {
-        //Se elimina la versión anterior de la tabla
+    public void onUpgrade(SQLiteDatabase db, int lastVersion, int newVersion) {
+        // Se elimina la versión anterior de la tabla
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 
-        //Se crea la nueva versión de la tabla
+        // Se crea la nueva versión de la tabla
         db.execSQL(CREATE_DB);
     }
 
-    /* Método para obtener todas las peliculas de la bd */
-
+    // Carga todos los tickets de la base de datos a un List<Ticket>
     public List<Ticket> getTicketsFromBD() {
         db = getWritableDatabase();
 
         cursor = db.query(TABLE_NAME, COLUMNS, "", null, null, null, null);
 
-        List<Ticket> ticketArray = new ArrayList<>();
-        Ticket Ticket;
+        List<Ticket> ticketList = new ArrayList<>();
+        Ticket ticket;
 
         if (cursor.moveToFirst()) {
             do {
-                Ticket = obtenerValores();
+                ticket = getTicketValues();
 
-                ticketArray.add(Ticket);
+                ticketList.add(ticket);
             } while(cursor.moveToNext());
         }
-        return ticketArray;
+        return ticketList;
     }
 
     public void insertTicket(Ticket ticket) {
-        ContentValues nuevoRegistro = asignarValores(ticket);
+        ContentValues newRecord = getRecordValues(ticket);
 
         db = getWritableDatabase();
-        db.insert(TABLE_NAME, null, nuevoRegistro);
+        db.insert(TABLE_NAME, null, newRecord);
     }
 
     /*
      * Método para obtener valores del cursor y devolver un objeto Pelicula
      * */
 
-    private Ticket obtenerValores(){
+    private Ticket getTicketValues(){
         Ticket ticket = new Ticket();
 
         ticket.setId(cursor.getInt(0));
@@ -128,21 +111,17 @@ public class TicketDB extends SQLiteOpenHelper {
         return ticket;
     }
 
-    /*
-     * Método para asignar valores al registro a actualizar o a insertar
-     * */
+    private ContentValues getRecordValues(Ticket ticket){
+        ContentValues newRecord = new ContentValues();
 
-    private ContentValues asignarValores(Ticket ticket){
-        ContentValues newRegistry = new ContentValues();
+        newRecord.put(COL_CATEGORY_ID, ticket.getCategory());
+        newRecord.put(COL_TITLE, ticket.getTitle());
+        newRecord.put(COL_DESCRIPTION, ticket.getDescription());
+        newRecord.put(COL_PRICE, ticket.getPrice());
+        newRecord.put(COL_DATE, ticket.getDate().getTime());
+        newRecord.put(COL_PHOTO,ticket.getImgFilename());
 
-        newRegistry.put(COL_CATEGORY_ID, ticket.getCategory());
-        newRegistry.put(COL_TITLE, ticket.getTitle());
-        newRegistry.put(COL_DESCRIPTION, ticket.getDescription());
-        newRegistry.put(COL_PRICE, ticket.getPrice());
-        newRegistry.put(COL_DATE, ticket.getDate().getTime());
-        newRegistry.put(COL_PHOTO,ticket.getImgFilename());
-
-        return newRegistry;
+        return newRecord;
     }
 
     public int getTicketCount(){

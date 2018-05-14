@@ -12,7 +12,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.ImageUtilities;
+import es.dadm.practica2.ImgUtil;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Ticket;
 
@@ -50,7 +50,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         holder.tvTitle.setText(ticket.getTitle());
         holder.tvDescription.setText(ticket.getDescription());
         holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), ticket.getPrice()));
-        holder.ivTicketImg.setImageBitmap(ImageUtilities.getImageAsBitmap(ticket.getImgFilename(), mContext));
+        holder.ivTicketImg.setImageBitmap(ImgUtil.getImageAsBitmap(ticket.getImgFilename(), mContext));
     }
 
     @Override

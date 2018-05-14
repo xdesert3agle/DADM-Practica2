@@ -130,12 +130,12 @@ public class TabContainer extends AppCompatActivity {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem()
                 .withIdentifier(0)
                 .withName(R.string.DRAWER_OPTION_BILLS)
-                .withIcon(getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24));
+                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24, TabContainer.this));
 
         PrimaryDrawerItem item2 = new PrimaryDrawerItem()
                 .withIdentifier(1)
                 .withName(R.string.DRAWER_OPTION_CATEGORIES)
-                .withIcon(getFontAwesomeIcon(FontAwesome.Icon.faw_folder, Color.DKGRAY, 24));
+                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_folder, Color.DKGRAY, 24, TabContainer.this));
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -180,13 +180,5 @@ public class TabContainer extends AppCompatActivity {
                 })
                 .withActionBarDrawerToggle(true)
                 .build();
-    }
-
-    public IconicsDrawable getFontAwesomeIcon(FontAwesome.Icon icon, int color, int dp) {
-
-        return new IconicsDrawable(this)
-                .icon(icon)
-                .color(color)
-                .sizeDp(dp);
     }
 }

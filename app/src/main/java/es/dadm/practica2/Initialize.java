@@ -8,6 +8,6 @@ public class Initialize extends Application{
     public void onCreate() {
         super.onCreate();
 
-        TicketDB.passContext(getApplicationContext());
+        TicketDB.init(getApplicationContext());
     }
 }
