@@ -1,24 +1,22 @@
 package es.dadm.practica2;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Ticket implements Parcelable{
+public class Ticket {
     private int id;
     private String title;
     private String description;
     private String category;
     private double price;
     private Date date;
-    private String photoFileName;
-
-    public Ticket(Parcel source){
-        readFromParcel(source);
-    }
+    private String imgFilename;
 
     public Ticket(){
         this.date = new Date();
@@ -32,12 +30,28 @@ public class Ticket implements Parcelable{
         this.id = id;
     }
 
-    public String getPhotoFileName() {
-        return photoFileName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setPhotoFileName(String photoFileName) {
-        this.photoFileName = photoFileName;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public double getPrice() {
@@ -69,30 +83,6 @@ public class Ticket implements Parcelable{
         this.date = date;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public void printInfo(){
         Log.d("ID", String.valueOf(this.id));
         Log.d("Importe", String.valueOf(this.price));
@@ -101,42 +91,11 @@ public class Ticket implements Parcelable{
         Log.d("Descripción larga", this.description);
     }
 
-    // MÉTODOS PARCELABLE
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getImgFilename() {
+        return imgFilename;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(photoFileName);
-        dest.writeDouble(price);
-        dest.writeLong(date.getTime());
-        dest.writeString(title);
-        dest.writeString(description);
-        dest.writeString(category);
+    public void setImgFilename(String imgFilename) {
+        this.imgFilename = imgFilename;
     }
-
-    private void readFromParcel(Parcel source) {
-        id = source.readInt();
-        photoFileName = source.readString();
-        price = source.readDouble();
-        date = new Date(source.readLong());
-        title = source.readString();
-        description = source.readString();
-        category = source.readString();
-    }
-
-    public static final Creator<Ticket> CREATOR = new Creator<Ticket>() {
-        @Override
-        public Ticket createFromParcel(Parcel in) {
-            return new Ticket(in);
-        }
-
-        @Override
-        public Ticket[] newArray(int size) {
-            return new Ticket[size];
-        }
-    };
 }

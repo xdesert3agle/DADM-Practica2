@@ -1,14 +1,18 @@
 package es.dadm.practica2;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
@@ -32,6 +37,7 @@ public class AddTicket extends AppCompatActivity {
     @BindView(R.id.etPrice) EditText etPrice;
     @BindView(R.id.spCategories) Spinner spCategories;
     @BindView(R.id.btnCreateTicket) Button btnCreateTicket;
+    File ticketImgFile;
 
     static final int PICK_IMAGE = 1;
     String[] galleryPermissions = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
@@ -82,8 +88,15 @@ public class AddTicket extends AppCompatActivity {
             public void onImagesPicked(List<File> imagesFiles, EasyImage.ImageSource source, int type) {
                 Toast.makeText(AddTicket.this, "Imagen seleccionada correctamente.", Toast.LENGTH_SHORT).show();
 
-                Bitmap myBitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getAbsolutePath());
-                ivTicketImg.setImageBitmap(myBitmap);
+                ticketImgFile = imagesFiles.get(0);
+                Bitmap bmTicketImg = BitmapFactory.decodeFile(ticketImgFile.getAbsolutePath());
+
+                ivTicketImg.setImageBitmap(bmTicketImg);
+
+                ImgProvider imgProv = new ImgProvider(AddTicket.this);
+                imgProv.saveImage(bmTicketImg, ticketImgFile.getName());
+
+                Log.d("Filename", ticketImgFile.getName());
             }
         });
     }
@@ -95,6 +108,10 @@ public class AddTicket extends AppCompatActivity {
         ticket.setDescription(etDescription.getText().toString());
         ticket.setPrice(Double.parseDouble(etPrice.getText().toString()));
         ticket.setCategory(spCategories.getSelectedItem().toString());
+        ticket.setImgFilename(ticketImgFile.getName());
+
+        ImgProvider imgProvider = new ImgProvider(AddTicket.this);
+        Log.d("Full path", imgProvider.getImgFile(ticket.getImgFilename()).getAbsolutePath());
 
         return ticket;
     }

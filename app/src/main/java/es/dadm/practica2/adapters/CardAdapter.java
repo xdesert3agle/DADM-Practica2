@@ -1,17 +1,21 @@
 package es.dadm.practica2.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dadm.practica2.ImgProvider;
 import es.dadm.practica2.Ticket;
 import es.dadm.practica2.R;
 
@@ -28,6 +32,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         @BindView(R.id.tvTitle) TextView tvTitle;
         @BindView(R.id.tvDescription) TextView tvDescription;
         @BindView(R.id.tvPrice) TextView tvPrice;
+        @BindView(R.id.ivTicketImg) ImageView ivTicketImg;
 
         CardViewHolder(View itemView) {
             super(itemView);
@@ -43,11 +48,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        Ticket Ticket = mTicketList.get(position);
+        Ticket ticket = mTicketList.get(position);
+        ImgProvider imgProvider = new ImgProvider(mContext);
 
-        holder.tvTitle.setText(Ticket.getTitle());
-        holder.tvDescription.setText(Ticket.getDescription());
-        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), Ticket.getPrice()));
+        holder.tvTitle.setText(ticket.getTitle());
+        holder.tvDescription.setText(ticket.getDescription());
+        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), ticket.getPrice()));
+        holder.ivTicketImg.setImageBitmap(BitmapFactory.decodeFile(imgProvider.getImgFile(ticket.getImgFilename()).getAbsolutePath()));
+
+        Log.d("Imagen", ticket.getImgFilename());
     }
 
     @Override

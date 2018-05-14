@@ -6,7 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.net.Uri;
+import android.provider.MediaStore;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +18,8 @@ import java.util.List;
 public class TicketSQLiteHelper extends SQLiteOpenHelper {
 
     private static TicketSQLiteHelper instance = null;
+
+    private Context context;
 
     private static final String DB_NAME = "BDTickets.db";
     private static final int DB_VERSION = 1;
@@ -50,8 +56,9 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
             COL_DATE + " LONG NOT NULL, " +
             COL_PHOTO + " TEXT NOT NULL)";
 
-    protected TicketSQLiteHelper(Context contexto) {
+    private TicketSQLiteHelper(Context contexto) {
         super(contexto, DB_NAME, null, DB_VERSION);
+        this.context = contexto;
     }
 
     public static void passContext(Context context){
@@ -120,7 +127,7 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
         ticket.setDescription(cursor.getString(3));
         ticket.setPrice(cursor.getInt(4));
         ticket.setDate(new Date(cursor.getLong(5)));
-        ticket.setPhotoFileName(cursor.getString(6));
+        ticket.setImgFilename(cursor.getString(6));
 
         return ticket;
     }
@@ -137,9 +144,7 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
         newRegistry.put(COL_DESCRIPTION, ticket.getDescription());
         newRegistry.put(COL_PRICE, ticket.getPrice());
         newRegistry.put(COL_DATE, ticket.getDate().getTime());
-
-        // TODO: Arreglar esto.
-        newRegistry.put(COL_PHOTO, "PhotoURL");//ticket.getPhotoFileName());
+        newRegistry.put(COL_PHOTO,ticket.getImgFilename());
 
         return newRegistry;
     }
