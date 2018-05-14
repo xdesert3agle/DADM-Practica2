@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +58,9 @@ public class TabContainer extends AppCompatActivity {
 
         // Escribe el número de facturas existentes en el título de la Toolbar
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), getTotalTickets()));
+        setToolbarTicketCount();
+
+        Log.d("Prueba nueva", String.valueOf(mTicketDB.getTicketCount()));
 
         setUpDrawer();
     }
@@ -104,11 +107,22 @@ public class TabContainer extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        setToolbarTicketCount();
+    }
+
+    private void setToolbarTicketCount(){
+        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), mTicketDB.getTicketCount()));
+    }
+
     private void loadTicketsFromDB() {
         mTicketList = mTicketDB.getTicketsFromBD();
     }
 
-    public int getTotalTickets() {
+    public int getTicketCount() {
         return mTicketList.size();
     }
 

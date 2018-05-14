@@ -12,13 +12,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.ImgProvider;
+import es.dadm.practica2.ImageUtilities;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Ticket;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>{
     private List<Ticket> mTicketList;
-    private final Context mContext;
+    private Context mContext;
 
     public ListAdapter(List<Ticket> TicketList, Context context){
         this.mTicketList = TicketList;
@@ -29,8 +29,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         @BindView(R.id.tvTitle) TextView tvTitle;
         @BindView(R.id.tvDescription) TextView tvDescription;
         @BindView(R.id.tvPrice) TextView tvPrice;
-        @BindView(R.id.ivTicketImg)
-        ImageView ivTicketImg;
+        @BindView(R.id.ivTicketImg) ImageView ivTicketImg;
 
         ListViewHolder(View itemView) {
             super(itemView);
@@ -47,12 +46,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
     @Override
     public void onBindViewHolder(ListViewHolder holder, int position) {
         Ticket ticket = mTicketList.get(position);
-        ImgProvider imgProvider = new ImgProvider(mContext);
 
         holder.tvTitle.setText(ticket.getTitle());
         holder.tvDescription.setText(ticket.getDescription());
         holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), ticket.getPrice()));
-        holder.ivTicketImg.setImageBitmap(imgProvider.getImgAsBitmap(ticket.getImgFilename()));
+        holder.ivTicketImg.setImageBitmap(ImageUtilities.getImageAsBitmap(ticket.getImgFilename(), mContext));
     }
 
     @Override

@@ -1,10 +1,7 @@
 package es.dadm.practica2.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +12,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.ImgProvider;
+import es.dadm.practica2.ImageUtilities;
 import es.dadm.practica2.Ticket;
 import es.dadm.practica2.R;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder>{
     private List<Ticket> mTicketList;
-    private final Context mContext;
+    private Context mContext;
 
     public CardAdapter(List<Ticket> TicketList, Context context){
         this.mTicketList = TicketList;
@@ -49,12 +46,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
         Ticket ticket = mTicketList.get(position);
-        ImgProvider imgProvider = new ImgProvider(mContext);
 
         holder.tvTitle.setText(ticket.getTitle());
         holder.tvDescription.setText(ticket.getDescription());
         holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), ticket.getPrice()));
-        holder.ivTicketImg.setImageBitmap(imgProvider.getImgAsBitmap(ticket.getImgFilename()));
+        holder.ivTicketImg.setImageBitmap(ImageUtilities.getImageAsBitmap(ticket.getImgFilename(), mContext));
     }
 
     @Override

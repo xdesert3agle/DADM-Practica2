@@ -3,9 +3,11 @@ package es.dadm.practica2;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import java.lang.Math.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +34,6 @@ public class TicketDB extends SQLiteOpenHelper {
     private SQLiteDatabase db;
     private Cursor cursor;
 
-    private SQLiteStatement insertStatement;
     private static final String INSERT_QUERY = "INSERT INTO " + TABLE_NAME + "(" +
             COL_ID + ", " +
             COL_CATEGORY_ID + ", " +
@@ -52,9 +53,9 @@ public class TicketDB extends SQLiteOpenHelper {
             COL_DATE + " LONG NOT NULL, " +
             COL_PHOTO + " TEXT NOT NULL)";
 
-    private TicketDB(Context contexto) {
-        super(contexto, DB_NAME, null, DB_VERSION);
-        this.context = contexto;
+    private TicketDB(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
+        this.context = context;
     }
 
     public static void passContext(Context context){
@@ -85,7 +86,6 @@ public class TicketDB extends SQLiteOpenHelper {
     /* Método para obtener todas las peliculas de la bd */
 
     public List<Ticket> getTicketsFromBD() {
-        //Abrimos la base de datos 'bdpeliculas' en modo escritura
         db = getWritableDatabase();
 
         cursor = db.query(TABLE_NAME, COLUMNS, "", null, null, null, null);
@@ -143,5 +143,9 @@ public class TicketDB extends SQLiteOpenHelper {
         newRegistry.put(COL_PHOTO,ticket.getImgFilename());
 
         return newRegistry;
+    }
+
+    public int getTicketCount(){
+        return Math.toIntExact(DatabaseUtils.queryNumEntries(db, TABLE_NAME));
     }
 }

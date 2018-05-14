@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -25,7 +25,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class AddTicket extends AppCompatActivity {
     @BindView(R.id.ivTicketImg) ImageView ivTicketImg;
-    @BindView(R.id.fabAddPhoto) FloatingActionButton fabAddPhoto;
+    @BindView(R.id.fabPhotoFromGallery) FloatingActionButton fabAddPhoto;
     @BindView(R.id.etTitle) EditText etTitle;
     @BindView(R.id.etDescription) EditText etDescription;
     @BindView(R.id.etPrice) EditText etPrice;
@@ -80,14 +80,15 @@ public class AddTicket extends AppCompatActivity {
 
             @Override
             public void onImagesPicked(List<File> imagesFiles, EasyImage.ImageSource source, int type) {
-                Toast.makeText(AddTicket.this, "Imagen seleccionada correctamente.", Toast.LENGTH_SHORT).show();
 
+                // Se guarda la imagen en un 'File' y se convierte a 'Bitmap' para ponersela al formulario
                 mTicketImgFile = imagesFiles.get(0);
                 Bitmap bmTicketImg = BitmapFactory.decodeFile(mTicketImgFile.getAbsolutePath());
 
-                ImgProvider imgProv = new ImgProvider(AddTicket.this);
-                imgProv.saveImage(bmTicketImg, mTicketImgFile.getName());
+                // Se guarda la imagen en la memoria externa del teléfono
+                ImageUtilities.saveImage(bmTicketImg, mTicketImgFile.getName(), AddTicket.this);
 
+                // Se pone la imagen en el formulario
                 ivTicketImg.setImageBitmap(bmTicketImg);
             }
         });

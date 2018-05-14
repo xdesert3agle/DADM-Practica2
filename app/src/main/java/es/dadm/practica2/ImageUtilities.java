@@ -9,14 +9,11 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 
-public class ImgProvider {
-    Context context;
+public class ImageUtilities {
 
-    public ImgProvider(Context context){
-        this.context = context;
-    }
+    public ImageUtilities(){}
 
-    public void saveImage(Bitmap bitMap, String filename){
+    public static void saveImage(Bitmap bitmap, String filename, Context context){
 
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
 
@@ -26,7 +23,8 @@ public class ImgProvider {
 
         try {
             FileOutputStream out = new FileOutputStream(file);
-            bitMap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
             out.flush();
             out.close();
         } catch (Exception e) {
@@ -34,12 +32,12 @@ public class ImgProvider {
         }
     }
 
-    public File getImgFile(String filename){
+    public static File getImgFile(String filename, Context context){
         context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
     }
 
-    public Bitmap getImgAsBitmap(String filename){
-        return BitmapFactory.decodeFile(getImgFile(filename).getAbsolutePath());
+    public static Bitmap getImageAsBitmap(String filename, Context context){
+        return BitmapFactory.decodeFile(getImgFile(filename, context).getAbsolutePath());
     }
 }
