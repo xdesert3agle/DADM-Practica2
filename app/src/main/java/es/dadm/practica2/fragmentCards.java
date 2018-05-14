@@ -19,7 +19,7 @@ public class fragmentCards extends Fragment {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
     CardAdapter mAdapter;
     List<Ticket> mTicketList;
-    TicketSQLiteHelper mTicketDB;
+    TicketDB mTicketDB;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class fragmentCards extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tickets_card_mode, container, false);
         ButterKnife.bind(this, view);
 
-        mTicketDB = TicketSQLiteHelper.getInstance();
+        mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
         mAdapter = new CardAdapter(mTicketList, getActivity());

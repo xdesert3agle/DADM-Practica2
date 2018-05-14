@@ -54,9 +54,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         holder.tvTitle.setText(ticket.getTitle());
         holder.tvDescription.setText(ticket.getDescription());
         holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), ticket.getPrice()));
-        holder.ivTicketImg.setImageBitmap(BitmapFactory.decodeFile(imgProvider.getImgFile(ticket.getImgFilename()).getAbsolutePath()));
-
-        Log.d("Imagen", ticket.getImgFilename());
+        holder.ivTicketImg.setImageBitmap(imgProvider.getImgAsBitmap(ticket.getImgFilename()));
     }
 
     @Override

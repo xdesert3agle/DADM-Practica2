@@ -13,14 +13,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.adapters.CardAdapter;
 import es.dadm.practica2.adapters.ListAdapter;
 
 public class fragmentList extends Fragment {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
     ListAdapter mAdapter;
     List<Ticket> mTicketList;
-    TicketSQLiteHelper mTicketDB;
+    TicketDB mTicketDB;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,7 +32,7 @@ public class fragmentList extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tickets_list_mode, container, false);
         ButterKnife.bind(this, view);
 
-        mTicketDB = TicketSQLiteHelper.getInstance();
+        mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
         mAdapter = new ListAdapter(mTicketList, getActivity());

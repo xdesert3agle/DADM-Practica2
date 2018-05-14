@@ -2,7 +2,9 @@ package es.dadm.practica2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +18,7 @@ public class ImgProvider {
 
     public void saveImage(Bitmap bitMap, String filename){
 
-        File file = new File(getImgFile(Environment.DIRECTORY_PICTURES), filename);
+        File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
 
         if (file.exists()){
             file.delete();
@@ -35,5 +37,9 @@ public class ImgProvider {
     public File getImgFile(String filename){
         context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
+    }
+
+    public Bitmap getImgAsBitmap(String filename){
+        return BitmapFactory.decodeFile(getImgFile(filename).getAbsolutePath());
     }
 }

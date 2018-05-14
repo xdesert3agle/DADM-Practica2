@@ -5,12 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dadm.practica2.ImgProvider;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Ticket;
 
@@ -27,6 +29,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         @BindView(R.id.tvTitle) TextView tvTitle;
         @BindView(R.id.tvDescription) TextView tvDescription;
         @BindView(R.id.tvPrice) TextView tvPrice;
+        @BindView(R.id.ivTicketImg)
+        ImageView ivTicketImg;
 
         ListViewHolder(View itemView) {
             super(itemView);
@@ -42,11 +46,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
 
     @Override
     public void onBindViewHolder(ListViewHolder holder, int position) {
-        Ticket Ticket = mTicketList.get(position);
+        Ticket ticket = mTicketList.get(position);
+        ImgProvider imgProvider = new ImgProvider(mContext);
 
-        holder.tvTitle.setText(Ticket.getTitle());
-        holder.tvDescription.setText(Ticket.getDescription());
-        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), Ticket.getPrice()));
+        holder.tvTitle.setText(ticket.getTitle());
+        holder.tvDescription.setText(ticket.getDescription());
+        holder.tvPrice.setText(String.format(mContext.getResources().getString(R.string.TICKET_PRICE), ticket.getPrice()));
+        holder.ivTicketImg.setImageBitmap(imgProvider.getImgAsBitmap(ticket.getImgFilename()));
     }
 
     @Override

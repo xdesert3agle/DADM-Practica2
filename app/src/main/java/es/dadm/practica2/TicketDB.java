@@ -6,18 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-import android.net.Uri;
-import android.provider.MediaStore;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TicketSQLiteHelper extends SQLiteOpenHelper {
+public class TicketDB extends SQLiteOpenHelper {
 
-    private static TicketSQLiteHelper instance = null;
+    private static TicketDB instance = null;
 
     private Context context;
 
@@ -56,18 +52,18 @@ public class TicketSQLiteHelper extends SQLiteOpenHelper {
             COL_DATE + " LONG NOT NULL, " +
             COL_PHOTO + " TEXT NOT NULL)";
 
-    private TicketSQLiteHelper(Context contexto) {
+    private TicketDB(Context contexto) {
         super(contexto, DB_NAME, null, DB_VERSION);
         this.context = contexto;
     }
 
     public static void passContext(Context context){
         if (instance == null){
-            instance = new TicketSQLiteHelper(context);
+            instance = new TicketDB(context);
         }
     }
 
-    public static TicketSQLiteHelper getInstance(){
+    public static TicketDB getInstance(){
         return instance;
     }
 
