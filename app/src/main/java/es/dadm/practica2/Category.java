@@ -9,7 +9,6 @@ import java.util.List;
 public class Category {
     private String title;
     private String description;
-    private List<Ticket> TicketList = new ArrayList<>();
 
     public Category(){}
 
@@ -27,9 +26,5 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Ticket> getTicketList() {
-        return TicketList;
     }
 }

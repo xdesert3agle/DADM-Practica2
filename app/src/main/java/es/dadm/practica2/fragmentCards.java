@@ -1,8 +1,9 @@
 package es.dadm.practica2;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,9 +36,18 @@ public class fragmentCards extends Fragment {
         mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
-        mAdapter = new CardAdapter(mTicketList, getActivity());
+        mAdapter = new CardAdapter(mTicketList, getActivity(), new CardAdapter.OnItemClickListener() {
+            @Override
+            public boolean onItemClicked(int position) {
+                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, position));
+
+                return false;
+            }
+        });
+
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 
         return view;
     }

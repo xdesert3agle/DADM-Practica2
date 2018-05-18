@@ -1,5 +1,6 @@
 package es.dadm.practica2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ public class fragmentList extends Fragment {
     ListAdapter mAdapter;
     List<Ticket> mTicketList;
     TicketDB mTicketDB;
+    public static final String TAG_TICKET_POSITION = "Ticket position";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +37,15 @@ public class fragmentList extends Fragment {
         mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
-        mAdapter = new ListAdapter(mTicketList, getActivity());
+        mAdapter = new ListAdapter(mTicketList, getActivity(), new ListAdapter.OnItemClickListener() {
+            @Override
+            public boolean onItemClicked(int position) {
+                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(TAG_TICKET_POSITION, position));
+
+                return false;
+            }
+        });
+
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 

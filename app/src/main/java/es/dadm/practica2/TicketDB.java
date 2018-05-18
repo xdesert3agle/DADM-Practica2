@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +26,7 @@ public class TicketDB extends SQLiteOpenHelper {
     private static final String COL_DATE = "DATE";
     private static final String COL_PHOTO = "PHOTO";
     private static final String[] COLUMNS = {COL_ID, COL_CATEGORY_ID, COL_TITLE, COL_DESCRIPTION, COL_PRICE, COL_DATE, COL_PHOTO};
+    private static final String WHERE_CLAUSE = "_id = ";
 
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -93,9 +95,12 @@ public class TicketDB extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, newRecord);
     }
 
-    /*
-     * Método para obtener valores del cursor y devolver un objeto Pelicula
-     * */
+    public void updateTicket(Ticket ticket) {
+        ContentValues record = getRecordValues(ticket);
+
+        db = getWritableDatabase();
+        db.update(TABLE_NAME, record, COL_ID + " = " + ticket.getId(), null);
+    }
 
     private Ticket getTicketValues(){
         Ticket ticket = new Ticket();
@@ -122,6 +127,18 @@ public class TicketDB extends SQLiteOpenHelper {
         newRecord.put(COL_PHOTO,ticket.getImgFilename());
 
         return newRecord;
+    }
+
+    public Ticket getTicketWithID(int targetID){
+        cursor = db.query(TABLE_NAME, COLUMNS, COL_ID + " = " + (targetID + 1), null, null, null, null);
+
+        Ticket ticket = new Ticket();
+
+        if (cursor.moveToFirst()) {
+            ticket = getTicketValues();
+        }
+
+        return ticket;
     }
 
     public int getTicketCount(){

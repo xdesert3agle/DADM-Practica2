@@ -21,7 +21,7 @@
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/TAB_CONTAINER_TITLE" />
+            app:title="@string/TITLE_TAB_CONTAINER" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tlTabs"

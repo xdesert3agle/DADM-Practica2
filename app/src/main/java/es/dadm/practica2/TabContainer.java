@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -98,7 +97,7 @@ public class TabContainer extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addBill: // Registrar una factura nueva
-                startActivity(new Intent(TabContainer.this, AddTicket.class));
+                startActivity(new Intent(TabContainer.this, AddEditTicket.class));
                 break;
             default:
                 throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
@@ -115,7 +114,7 @@ public class TabContainer extends AppCompatActivity {
     }
 
     private void setToolbarTicketCount(){
-        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TAB_CONTAINER_TITLE), mTicketDB.getTicketCount()));
+        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TAB_CONTAINER), mTicketDB.getTicketCount()));
     }
 
     private void loadTicketsFromDB() {

@@ -7,7 +7,7 @@
     <string name="DRAWER_OPTION_SETTINGS">Settings</string>
 
     <!-- TAB CONTAINER -->
-    <string name="TAB_CONTAINER_TITLE">Mis facturas (%1$d)</string>
+    <string name="TITLE_TAB_CONTAINER">Mis facturas (%1$d)</string>
     <string name="TAB_LIST_TITLE">Lista</string>
     <string name="TAB_TILES_TITLE">Mosaico</string>
     <string name="TAB_CARDS_TITLE">Tarjetas</string>
@@ -17,8 +17,13 @@
     <string name="TICKET_DESC">Descripción del ticket</string>
     <string name="TICKET_PRICE">%1$.2f €</string>
 
-    <!-- ADD TICKET -->
-    <string name="ADD_TICKET_TITLE">Nuevo ticket</string>
+    <!-- ADD & EDIT TICKET -->
+    <string name="TITLE_ADD_TICKET">Nuevo ticket</string>
+    <string name="TITLE_EDIT_TICKET">Editar ticket</string>
+    <string name="BTN_ADD_TICKET">Añadir ticket</string>
+    <string name="BTN_EDIT_TICKET">Editar ticket</string>
+    <string name="FAB_ADD_EDIT_TICKET_GALLERY">Galería</string>
+    <string name="FAB_ADD_EDIT_TICKET_CAMERA">Cámara</string>
 
     <string-array name="size_entries">
         <item>Small</item>

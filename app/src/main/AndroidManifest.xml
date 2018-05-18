@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".Initialize"
         android:allowBackup="true"
@@ -22,8 +23,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddTicket"
-            android:label="@string/ADD_TICKET_TITLE"
+            android:name=".AddEditTicket"
+            android:label="@string/TITLE_ADD_TICKET"
             android:theme="@style/Theme_Light.NoActionBar" />
     </application>
 

@@ -14,15 +14,18 @@ import java.io.FileOutputStream;
 
 public class ImgUtil {
 
-    public ImgUtil(){}
+    private ImgUtil(){}
+
+    public static File getImgFile(String filename, Context context){
+        return new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
+    }
+
+    public static Bitmap getImageAsBitmap(String filename, Context context){
+        return BitmapFactory.decodeFile(getImgFile(filename, context).getAbsolutePath());
+    }
 
     public static void saveImage(Bitmap bitmap, String filename, Context context){
-
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
-
-        if (file.exists()){
-            file.delete();
-        }
 
         try {
             FileOutputStream out = new FileOutputStream(file);
@@ -35,13 +38,15 @@ public class ImgUtil {
         }
     }
 
-    public static File getImgFile(String filename, Context context){
-        return new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
+    public static void deleteImage(String filename, Context context){
+        File file = getImgFile(filename, context);
+
+        if (file.exists()){
+            file.delete();
+        }
     }
 
-    public static Bitmap getImageAsBitmap(String filename, Context context){
-        return BitmapFactory.decodeFile(getImgFile(filename, context).getAbsolutePath());
-    }
+
 
     private static Bitmap scaleBitmap(Bitmap source, double scale){
         float aspectRatio = source.getWidth() / (float)source.getHeight();
