@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class AddEditTicket extends AppCompatActivity {
+public class AddEditTicket extends AppCompatActivity implements View.OnClickListener{
     @BindView(R.id.ivTicketImg) ImageView ivTicketImg;
     @BindView(R.id.fabActionMenu) FloatingActionsMenu fabActionMenu;
     @BindView(R.id.fabPhotoFromGallery) FloatingActionButton fabPhotoFromGallery;
@@ -36,7 +36,7 @@ public class AddEditTicket extends AppCompatActivity {
     @BindView(R.id.etDescription) EditText etDescription;
     @BindView(R.id.etPrice) EditText etPrice;
     @BindView(R.id.spCategories) Spinner spCategories;
-    @BindView(R.id.btnCreateTicket) Button btnCreateTicket;
+    @BindView(R.id.btnCreateEditTicket) Button btnCreateEditTicket;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
     private TicketDB mTicketDB;
@@ -50,6 +50,10 @@ public class AddEditTicket extends AppCompatActivity {
         setContentView(R.layout.activity_add_edit_ticket);
 
         ButterKnife.bind(this);
+
+        btnCreateEditTicket.setOnClickListener(this);
+        fabPhotoFromGallery.setOnClickListener(this);
+        fabPhotoFromCamera.setOnClickListener(this);
 
         // Se colocan los iconos a los fab
         fabPhotoFromGallery.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_image, Color.WHITE, 26, AddEditTicket.this));
@@ -65,7 +69,7 @@ public class AddEditTicket extends AppCompatActivity {
             etTitle.setText(mSelTicket.getTitle());
             etDescription.setText(mSelTicket.getDescription());
             etPrice.setText(String.valueOf(mSelTicket.getPrice()));
-            btnCreateTicket.setText(R.string.BTN_EDIT_TICKET);
+            btnCreateEditTicket.setText(R.string.BTN_EDIT_TICKET);
 
             mToolbar.setTitle(R.string.TITLE_EDIT_TICKET);
         } else { // Si el usuario ha entrado a añadir un ticket nuevo
@@ -73,39 +77,34 @@ public class AddEditTicket extends AppCompatActivity {
         }
 
         setSupportActionBar(mToolbar);
+    }
 
+    @Override
+    public void onClick(View view) {
 
-        btnCreateTicket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isEditMode()){
+        switch (view.getId()) {
+            case R.id.btnCreateEditTicket:
+                if (!isEditMode()) {
                     insertNewTicket();
                 } else {
                     updateSelectedTicket();
                 }
 
                 finish();
-            }
-        });
+                break;
 
-        // Opción 1 presionada. La foto viene de la galería
-        fabPhotoFromGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            case R.id.fabPhotoFromGallery: // Opción 1 presionada. La foto viene de la galería
                 EasyImage.openGallery(AddEditTicket.this, 0);
                 fabActionMenu.collapse();
-            }
-        });
 
-        // Opción 2 presionada. La foto viene de la cámara de fotos
-        fabPhotoFromCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                break;
+
+            case R.id.fabPhotoFromCamera: // Opción 2 presionada. La foto viene de la cámara de fotos
                 EasyImage.openCamera(AddEditTicket.this, 0);
                 fabActionMenu.collapse();
-            }
-        });
 
+                break;
+        }
     }
 
     @Override
