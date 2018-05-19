@@ -6,14 +6,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dadm.practica2.Interfaces.TicketActions;
 import es.dadm.practica2.adapters.CardAdapter;
 
 public class fragmentCards extends Fragment {
@@ -36,18 +39,20 @@ public class fragmentCards extends Fragment {
         mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
-        mAdapter = new CardAdapter(mTicketList, getActivity(), new CardAdapter.OnItemClickListener() {
+        mAdapter = new CardAdapter(mTicketList, getActivity(), new TicketActions() {
             @Override
-            public boolean onItemClicked(int position) {
+            public void onItemClicked(int position) {
                 startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, position));
+            }
 
-                return false;
+            @Override
+            public void onItemLongClicked(int position) {
+                Toast.makeText(getActivity(), "LongClick al ticket número " + position, Toast.LENGTH_SHORT).show();
             }
         });
 
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-
 
         return view;
     }

@@ -9,11 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dadm.practica2.Interfaces.TicketActions;
 import es.dadm.practica2.adapters.ListAdapter;
 
 public class fragmentList extends Fragment {
@@ -37,12 +39,15 @@ public class fragmentList extends Fragment {
         mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
-        mAdapter = new ListAdapter(mTicketList, getActivity(), new ListAdapter.OnItemClickListener() {
+        mAdapter = new ListAdapter(mTicketList, getActivity(), new TicketActions() {
             @Override
-            public boolean onItemClicked(int position) {
+            public void onItemClicked(int position) {
                 startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(TAG_TICKET_POSITION, position));
+            }
 
-                return false;
+            @Override
+            public void onItemLongClicked(int position) {
+                Toast.makeText(getActivity(), "LongClick al ticket número " + position, Toast.LENGTH_SHORT).show();
             }
         });
 
