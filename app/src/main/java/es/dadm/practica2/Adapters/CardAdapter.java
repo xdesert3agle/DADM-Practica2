@@ -1,7 +1,8 @@
-package es.dadm.practica2.adapters;
+package es.dadm.practica2.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         this.mTicketActions = ticketActions;
     }
 
-    class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
         @BindView(R.id.tvTitle) TextView tvTitle;
         @BindView(R.id.tvDescription) TextView tvDescription;
         @BindView(R.id.tvPrice) TextView tvPrice;
@@ -37,7 +38,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         CardViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
+            itemView.setOnCreateContextMenuListener(this);
 
             ButterKnife.bind(this, itemView);
         }
@@ -48,10 +49,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         }
 
         @Override
-        public boolean onLongClick(View view) {
-            mTicketActions.onItemLongClicked(getAdapterPosition());
-
-            return true;
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            mTicketActions.onCreateContextMenu(view, contextMenu, getAdapterPosition());
         }
     }
 

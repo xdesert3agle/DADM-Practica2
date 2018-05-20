@@ -1,12 +1,19 @@
 package es.dadm.practica2;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -16,14 +23,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dadm.practica2.Interfaces.TicketActions;
-import es.dadm.practica2.adapters.ListAdapter;
+import es.dadm.practica2.Adapters.ListAdapter;
 
 public class fragmentList extends Fragment {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
-    ListAdapter mAdapter;
-    List<Ticket> mTicketList;
-    TicketDB mTicketDB;
+
     public static final String TAG_TICKET_POSITION = "Ticket position";
+
+    private ListAdapter mAdapter;
+    private List<Ticket> mTicketList;
+    private TicketDB mTicketDB;
+    private int mSelTicketPosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,8 +56,11 @@ public class fragmentList extends Fragment {
             }
 
             @Override
-            public void onItemLongClicked(int position) {
-                Toast.makeText(getActivity(), "LongClick al ticket número " + position, Toast.LENGTH_SHORT).show();
+            public void onCreateContextMenu(View view, ContextMenu menu, int position) {
+                mSelTicketPosition = position;
+
+                MenuInflater inflater = new MenuInflater(getActivity());
+                inflater.inflate(R.menu.long_press_menu, menu);
             }
         });
 
@@ -66,6 +79,30 @@ public class fragmentList extends Fragment {
     }
 
     @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (getUserVisibleHint()) {
+            switch (item.getItemId()){
+                case R.id.lpDeleteTicket:
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(R.string.MSG_TICKET_DELETE_CONFIRM)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deleteSelectedTicket();
+                                    refreshTicketList();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                    break;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser && mTicketDB != null) {
@@ -76,5 +113,21 @@ public class fragmentList extends Fragment {
     public void refreshTicketList(){
         mTicketList = mTicketDB.getTicketsFromBD();
         mAdapter.setContent(mTicketList);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void deleteSelectedTicket(){
+        // Se recupera el ticket sobre el que el usuario ha hecho la pulsación larga
+        Ticket selectedTicket = mTicketList.get(mSelTicketPosition);
+
+        ImgUtil.deleteImage(selectedTicket.getImgFilename(), getActivity()); // Se borra tanto el ticket de la base de datos...
+        mTicketDB.deleteTicket(selectedTicket); // ...como la imagen de la factura de la memoria externa del teléfono
+
+        Toast.makeText(getActivity(), String.format(getString(R.string.MSG_DELETED_TICKET), selectedTicket.getTitle()), Toast.LENGTH_SHORT).show();
+        setToolbarTicketCount();
+    }
+
+    private void setToolbarTicketCount(){
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TAB_CONTAINER), mTicketDB.getTicketCount()));
     }
 }

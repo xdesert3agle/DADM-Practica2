@@ -28,7 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.adapters.TabsAdapter;
+import es.dadm.practica2.Adapters.TabsAdapter;
 
 
 public class TabContainer extends AppCompatActivity {
@@ -58,8 +58,6 @@ public class TabContainer extends AppCompatActivity {
         // Escribe el número de facturas existentes en el título de la Toolbar
         setSupportActionBar(mToolbar);
         setToolbarTicketCount();
-
-        Log.d("Prueba nueva", String.valueOf(mTicketDB.getTicketCount()));
 
         setUpDrawer();
     }
@@ -180,4 +178,6 @@ public class TabContainer extends AppCompatActivity {
                 .withActionBarDrawerToggle(true)
                 .build();
     }
+
+
 }

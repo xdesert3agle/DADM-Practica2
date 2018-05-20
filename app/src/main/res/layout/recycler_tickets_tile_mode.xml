@@ -2,67 +2,37 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cvBill"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardUseCompatPadding="true">
+        android:layout_height="match_parent"
+        android:background="#99000000">
 
-        <LinearLayout
-            android:id="@+id/llCard"
+        <ImageView
+            android:id="@+id/ivTicketImg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:scaleType="centerCrop"
+            android:src="@drawable/card_placeholder"
+            android:layout_gravity="center"
+            android:background="#CCFF0000" />
 
-            <LinearLayout
-                android:id="@+id/llBillImg"
-                android:layout_width="match_parent"
-                android:layout_height="180dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#99000000" >
+        </FrameLayout>
 
-                <ImageView
-                    android:id="@+id/ivBillImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/card_placeholder" />
-            </LinearLayout>
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:text="@string/TICKET_TITLE"
+            android:textSize="22sp" />
+    </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/llBillFields"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Título de la carta"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/tvLongDesc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Descripción larga de la tarjeta"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Precio"
-                    android:textSize="22sp"
-                    android:textColor="@color/material_red"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
 </LinearLayout>

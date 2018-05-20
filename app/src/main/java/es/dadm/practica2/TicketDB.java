@@ -102,6 +102,13 @@ public class TicketDB extends SQLiteOpenHelper {
         db.update(TABLE_NAME, record, COL_ID + " = " + ticket.getId(), null);
     }
 
+    public void deleteTicket(Ticket ticket) {
+        ContentValues record = getRecordValues(ticket);
+
+        db = getWritableDatabase();
+        db.delete(TABLE_NAME, COL_ID + " = " + ticket.getId(), null);
+    }
+
     private Ticket getTicketValues(){
         Ticket ticket = new Ticket();
 

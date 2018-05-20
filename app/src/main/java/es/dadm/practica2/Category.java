@@ -1,11 +1,5 @@
 package es.dadm.practica2;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Category {
     private String title;
     private String description;

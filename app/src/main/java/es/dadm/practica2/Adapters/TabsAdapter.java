@@ -1,4 +1,4 @@
-package es.dadm.practica2.adapters;
+package es.dadm.practica2.Adapters;
 
 
 import android.support.v4.app.Fragment;

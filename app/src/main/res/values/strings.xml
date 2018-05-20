@@ -24,6 +24,11 @@
     <string name="BTN_EDIT_TICKET">Editar ticket</string>
     <string name="FAB_ADD_EDIT_TICKET_GALLERY">Galería</string>
     <string name="FAB_ADD_EDIT_TICKET_CAMERA">Cámara</string>
+    <string name="LPRESS_DELETE_OPT">Eliminar</string>
+
+    <!-- Messages -->
+    <string name="MSG_DELETED_TICKET">Has eliminado el ticket \'%s\'</string>
+    <string name="MSG_TICKET_DELETE_CONFIRM">¿Estás seguro/a de que quieres borrar el ticket?</string>
 
     <string-array name="size_entries">
         <item>Small</item>
