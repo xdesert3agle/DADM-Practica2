@@ -12,6 +12,8 @@ import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +57,8 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         fabPhotoFromGallery.setOnClickListener(this);
         fabPhotoFromCamera.setOnClickListener(this);
 
+        etPrice.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
+
         // Se colocan los iconos a los fab
         fabPhotoFromGallery.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_image, Color.WHITE, 26, AddEditTicket.this));
         fabPhotoFromCamera.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_camera, Color.WHITE, 26, AddEditTicket.this));
@@ -63,6 +67,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
         if (isEditMode()){ // Si el usuario ha entrado a editar
             int targetTicketID = getIntent().getExtras().getInt(fragmentList.TAG_TICKET_POSITION);
+
             mSelTicket = mTicketDB.getTicketWithID(targetTicketID);
 
             ivTicketImg.setImageBitmap(ImgUtil.getImageAsBitmap(mSelTicket.getImgFilename(), this));
@@ -85,7 +90,13 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         switch (view.getId()) {
             case R.id.btnCreateEditTicket:
                 if (!isEditMode()) {
-                    insertNewTicket();
+                    if (!emptyFieldsLeft()){
+                        insertNewTicket();
+                    } else {
+                        Toast.makeText(this, R.string.MSG_EMPTY_FIELDS, Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
                 } else {
                     updateSelectedTicket();
                 }
@@ -140,6 +151,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         mNewTicket.setTitle(etTitle.getText().toString());
         mNewTicket.setDescription(etDescription.getText().toString());
         mNewTicket.setPrice(Double.parseDouble(etPrice.getText().toString()));
+        Log.d("Precio", String.valueOf(Double.parseDouble(etPrice.getText().toString())));
         mNewTicket.setCategory(spCategories.getSelectedItem().toString());
         mNewTicket.setImgFilename(mImgName);
     }
@@ -163,6 +175,10 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
 
         mTicketDB.updateTicket(mSelTicket);
+    }
+
+    public boolean emptyFieldsLeft(){
+        return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || etPrice.getText().toString().isEmpty() || mImgName == null;
     }
 
     public boolean isEditMode(){

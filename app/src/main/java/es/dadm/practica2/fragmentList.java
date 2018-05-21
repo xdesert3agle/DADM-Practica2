@@ -52,7 +52,7 @@ public class fragmentList extends Fragment {
         mAdapter = new ListAdapter(mTicketList, getActivity(), new TicketActions() {
             @Override
             public void onItemClicked(int position) {
-                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(TAG_TICKET_POSITION, position));
+                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, mTicketList.get(position).getId()));
             }
 
             @Override

@@ -52,7 +52,7 @@ public class fragmentTiles extends Fragment {
         mAdapter = new TileAdapter(mTicketList, getActivity(), new TicketActions() {
             @Override
             public void onItemClicked(int position) {
-                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, position));
+                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, mTicketList.get(position).getId()));
             }
 
             @Override
@@ -123,8 +123,6 @@ public class fragmentTiles extends Fragment {
 
         Toast.makeText(getActivity(), String.format(getString(R.string.MSG_DELETED_TICKET), selectedTicket.getTitle()), Toast.LENGTH_SHORT).show();
         setToolbarTicketCount();
-
-        startActivity(new Intent(getActivity(), TabContainer.class));
     }
 
     private void setToolbarTicketCount(){

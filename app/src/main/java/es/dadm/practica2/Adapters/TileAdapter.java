@@ -61,8 +61,6 @@ public class TileAdapter extends RecyclerView.Adapter<TileAdapter.TileViewHolder
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         int desiredWidth = displayMetrics.widthPixels / 2;
 
-        Log.d("Width", String.valueOf(desiredWidth));
-
         v.getLayoutParams().width = desiredWidth;
         v.getLayoutParams().height = desiredWidth;
 

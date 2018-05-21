@@ -137,9 +137,9 @@ public class TicketDB extends SQLiteOpenHelper {
     }
 
     public Ticket getTicketWithID(int targetID){
-        cursor = db.query(TABLE_NAME, COLUMNS, COL_ID + " = " + (targetID + 1), null, null, null, null);
-
         Ticket ticket = new Ticket();
+
+        cursor = db.query(TABLE_NAME, COLUMNS, COL_ID + " = " + targetID, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             ticket = getTicketValues();
