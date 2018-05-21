@@ -38,6 +38,11 @@ public class TabContainer extends AppCompatActivity {
 
     private Drawer mDrawer;
 
+    private TabsAdapter mTabAdapter;
+    private fragmentList mFragmentList;
+    private fragmentTiles mFragmentTiles;
+    private fragmentCards mFragmentCards;
+
     TicketDB mTicketDB;
     private List<Ticket> mTicketList = new ArrayList<>();
 
@@ -49,6 +54,7 @@ public class TabContainer extends AppCompatActivity {
 
         ButterKnife.bind(this);
         mTicketDB = TicketDB.getInstance();
+        fragmentTiles fragmentTiles ;
 
         loadTicketsFromDB();
 
@@ -63,18 +69,18 @@ public class TabContainer extends AppCompatActivity {
     }
 
     private void setUpViewPager(ViewPager viewPager) {
-        TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager());
+        mTabAdapter = new TabsAdapter(getSupportFragmentManager());
 
-        fragmentList fragmentList = new fragmentList();
-        fragmentTiles fragmentTiles = new fragmentTiles();
-        fragmentCards fragmentCards = new fragmentCards();
+        mFragmentList= new fragmentList();
+        mFragmentTiles = new fragmentTiles();
+        mFragmentCards = new fragmentCards();
 
-        tabsAdapter.addFragment(fragmentList, getString(R.string.TAB_LIST_TITLE));
-        tabsAdapter.addFragment(fragmentTiles, getString(R.string.TAB_TILES_TITLE));
-        tabsAdapter.addFragment(fragmentCards, getString(R.string.TAB_CARDS_TITLE));
+        mTabAdapter.addFragment(mFragmentList, getString(R.string.TAB_LIST_TITLE));
+        mTabAdapter.addFragment(mFragmentTiles, getString(R.string.TAB_TILES_TITLE));
+        mTabAdapter.addFragment(mFragmentCards, getString(R.string.TAB_CARDS_TITLE));
 
         viewPager.setOffscreenPageLimit(2); // Carga todas las tabs al entrar a la aplicación.
-        viewPager.setAdapter(tabsAdapter);
+        viewPager.setAdapter(mTabAdapter);
     }
 
     @Override
@@ -162,12 +168,20 @@ public class TabContainer extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        Log.d("Posicion clickada", String.valueOf(position));
                         switch (position) {
-                            case 0:
+                            case 1:
                                 Toast.makeText(TabContainer.this, "Has presionado el botón de las facturas.", Toast.LENGTH_SHORT).show();
                                 break;
-                            case 1:
-                                Toast.makeText(TabContainer.this, "Has presionado el botón de las categorías.", Toast.LENGTH_SHORT).show();
+                            case 2:
+
+                                removeTab(0);
+                                removeTab(0);
+                                removeTab(0);
+
+                                mTabAdapter.addFragment(mFragmentCards, getString(R.string.TAB_TILES_TITLE));
+                                mTabAdapter.notifyDataSetChanged();
+                                mViewPager.setAdapter(mTabAdapter);
                                 break;
                             default:
                                 throw new IllegalArgumentException("The pressed button has not been recognised.");
@@ -177,6 +191,13 @@ public class TabContainer extends AppCompatActivity {
                 })
                 .withActionBarDrawerToggle(true)
                 .build();
+    }
+
+    public void removeTab(int position) {
+        if (mTabLayout.getTabCount() >= 1 && position<mTabLayout.getTabCount()) {
+            mTabLayout.removeTabAt(position);
+            mTabAdapter.removeTabPage(position);
+        }
     }
 
 

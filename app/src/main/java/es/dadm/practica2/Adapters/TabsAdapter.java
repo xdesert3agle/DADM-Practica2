@@ -22,6 +22,11 @@ public class TabsAdapter extends FragmentPagerAdapter {
         mFragmentTitleList.add(title);
     }
 
+    public void removeTabPage(int position) {
+        mFragmentList.remove(position);
+        notifyDataSetChanged();
+    }
+
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);

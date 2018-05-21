@@ -116,7 +116,7 @@ public class TicketDB extends SQLiteOpenHelper {
         ticket.setCategory(cursor.getString(1));
         ticket.setTitle(cursor.getString(2));
         ticket.setDescription(cursor.getString(3));
-        ticket.setPrice(cursor.getInt(4));
+        ticket.setPrice(cursor.getDouble(4));
         ticket.setDate(new Date(cursor.getLong(5)));
         ticket.setImgFilename(cursor.getString(6));
 

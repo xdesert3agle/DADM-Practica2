@@ -5,21 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 
 import java.io.File;
 import java.util.List;
@@ -151,7 +149,6 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         mNewTicket.setTitle(etTitle.getText().toString());
         mNewTicket.setDescription(etDescription.getText().toString());
         mNewTicket.setPrice(Double.parseDouble(etPrice.getText().toString()));
-        Log.d("Precio", String.valueOf(Double.parseDouble(etPrice.getText().toString())));
         mNewTicket.setCategory(spCategories.getSelectedItem().toString());
         mNewTicket.setImgFilename(mImgName);
     }
