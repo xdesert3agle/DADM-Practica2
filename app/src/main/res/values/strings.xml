@@ -33,6 +33,8 @@
     <string name="MSG_EMPTY_FIELDS">Rellena todos los campos para continuar.</string>
     <string name="MSG_TICKET_DELETE_CONFIRM">¿Estás seguro/a de que quieres borrar el ticket?</string>
     <string name="MSG_DELETED_TICKET">Has eliminado el ticket \'%s\'</string>
+    <string name="MSG_GALLERY_RAT">La app necesita acceso a tu Galería para poder seleccionar la foto del ticket.</string>
+    <string name="MSG_CAMERA_RAT">La app necesita acceso a la cámara de fotos para poder obtener una foto del ticket.</string>
 
     <string-array name="size_entries">
         <item>Small</item>
