@@ -17,6 +17,9 @@
     <string name="TICKET_DESC">Descripción del ticket</string>
     <string name="TICKET_PRICE">%1$.2f €</string>
 
+    <!-- CATEGORY FIELDS -->
+    <string name="CATEGORY_TITLE">Título de la categoría</string>
+
     <!-- ADD & EDIT TICKET -->
     <string name="TITLE_ADD_TICKET">Nuevo ticket</string>
     <string name="TITLE_EDIT_TICKET">Editar ticket</string>

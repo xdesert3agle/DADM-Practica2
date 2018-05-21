@@ -21,7 +21,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/ivTicketImg"
+                android:id="@+id/ivImg"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"

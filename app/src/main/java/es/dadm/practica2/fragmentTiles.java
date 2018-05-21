@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -22,9 +21,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.Adapters.CardAdapter;
 import es.dadm.practica2.Adapters.TileAdapter;
-import es.dadm.practica2.Interfaces.TicketActions;
+import es.dadm.practica2.Interfaces.ElementActions;
 
 public class fragmentTiles extends Fragment {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
@@ -49,7 +47,7 @@ public class fragmentTiles extends Fragment {
         mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
-        mAdapter = new TileAdapter(mTicketList, getActivity(), new TicketActions() {
+        mAdapter = new TileAdapter(mTicketList, getActivity(), new ElementActions() {
             @Override
             public void onItemClicked(int position) {
                 startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, mTicketList.get(position).getId()));

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme_Light">
         <activity
-            android:name=".TabContainer"
+            android:name=".TicketTabContainer"
             android:theme="@style/Theme_Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +26,7 @@
             android:name=".AddEditTicket"
             android:label="@string/TITLE_ADD_TICKET"
             android:theme="@style/Theme_Light.NoActionBar" />
+        <activity android:name=".Categories"></activity>
     </application>
 
 </manifest>

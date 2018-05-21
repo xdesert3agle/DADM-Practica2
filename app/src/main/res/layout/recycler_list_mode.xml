@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/ivTicketImg"
+        android:id="@+id/ivImg"
         android:layout_width="107.3dp"
         android:layout_height="107.3dp"
         android:scaleType="centerCrop"

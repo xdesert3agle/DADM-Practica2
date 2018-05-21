@@ -23,7 +23,7 @@
                 android:layout_height="180dp">
 
                 <ImageView
-                    android:id="@+id/ivTicketImg"
+                    android:id="@+id/ivImg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"

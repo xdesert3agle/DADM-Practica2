@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +30,7 @@ import butterknife.ButterKnife;
 import es.dadm.practica2.Adapters.TabsAdapter;
 
 
-public class TabContainer extends AppCompatActivity {
+public class TicketTabContainer extends AppCompatActivity {
     @BindView(R.id.vpContent) ViewPager mViewPager;
     @BindView(R.id.tlTabs) TabLayout mTabLayout;
     @BindView(R.id.toolbar) Toolbar mToolbar;
@@ -53,8 +52,9 @@ public class TabContainer extends AppCompatActivity {
         setContentView(R.layout.activity_tab_container);
 
         ButterKnife.bind(this);
+
+        mViewPager.setSaveFromParentEnabled(false);
         mTicketDB = TicketDB.getInstance();
-        fragmentTiles fragmentTiles ;
 
         loadTicketsFromDB();
 
@@ -71,7 +71,7 @@ public class TabContainer extends AppCompatActivity {
     private void setUpViewPager(ViewPager viewPager) {
         mTabAdapter = new TabsAdapter(getSupportFragmentManager());
 
-        mFragmentList= new fragmentList();
+        mFragmentList = new fragmentList();
         mFragmentTiles = new fragmentTiles();
         mFragmentCards = new fragmentCards();
 
@@ -101,7 +101,7 @@ public class TabContainer extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addBill: // Registrar una factura nueva
-                startActivity(new Intent(TabContainer.this, AddEditTicket.class));
+                startActivity(new Intent(TicketTabContainer.this, AddEditTicket.class));
                 break;
             default:
                 throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
@@ -133,12 +133,12 @@ public class TabContainer extends AppCompatActivity {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem()
                 .withIdentifier(0)
                 .withName(R.string.DRAWER_OPTION_BILLS)
-                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24, TabContainer.this));
+                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24, TicketTabContainer.this));
 
         PrimaryDrawerItem item2 = new PrimaryDrawerItem()
                 .withIdentifier(1)
                 .withName(R.string.DRAWER_OPTION_CATEGORIES)
-                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_folder, Color.DKGRAY, 24, TabContainer.this));
+                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_folder, Color.DKGRAY, 24, TicketTabContainer.this));
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -168,23 +168,15 @@ public class TabContainer extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        Log.d("Posicion clickada", String.valueOf(position));
                         switch (position) {
                             case 1:
-                                Toast.makeText(TabContainer.this, "Has presionado el botón de las facturas.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(TicketTabContainer.this, "Has presionado el botón de las facturas.", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
-
-                                removeTab(0);
-                                removeTab(0);
-                                removeTab(0);
-
-                                mTabAdapter.addFragment(mFragmentCards, getString(R.string.TAB_TILES_TITLE));
-                                mTabAdapter.notifyDataSetChanged();
-                                mViewPager.setAdapter(mTabAdapter);
+                                Toast.makeText(TicketTabContainer.this, "Has presionado el botón de las categorías.", Toast.LENGTH_SHORT).show();
                                 break;
                             default:
-                                throw new IllegalArgumentException("The pressed button has not been recognised.");
+                                throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
                         }
                         return true;
                     }
@@ -194,11 +186,13 @@ public class TabContainer extends AppCompatActivity {
     }
 
     public void removeTab(int position) {
-        if (mTabLayout.getTabCount() >= 1 && position<mTabLayout.getTabCount()) {
-            mTabLayout.removeTabAt(position);
-            mTabAdapter.removeTabPage(position);
-        }
+        mTabLayout.removeTabAt(position);
+        mTabAdapter.removeTabPage(position);
     }
 
+    private void addTab(String title) {
+        mTabLayout.addTab(mTabLayout.newTab().setText(title));
 
+        mTabAdapter.notifyDataSetChanged();
+    }
 }

@@ -3,6 +3,7 @@ package es.dadm.practica2;
 public class Category {
     private String title;
     private String description;
+    private String imgFilename;
 
     public Category(){}
 
@@ -20,5 +21,13 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImgFilename() {
+        return imgFilename;
+    }
+
+    public void setImgFilename(String imgFilename) {
+        this.imgFilename = imgFilename;
     }
 }

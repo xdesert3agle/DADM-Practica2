@@ -28,7 +28,7 @@ import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class AddEditTicket extends AppCompatActivity implements View.OnClickListener{
-    @BindView(R.id.ivTicketImg) ImageView ivTicketImg;
+    @BindView(R.id.ivImg) ImageView ivTicketImg;
     @BindView(R.id.fabActionMenu) FloatingActionsMenu fabActionMenu;
     @BindView(R.id.fabPhotoFromGallery) FloatingActionButton fabPhotoFromGallery;
     @BindView(R.id.fabPhotoFromCamera) FloatingActionButton fabPhotoFromCamera;
