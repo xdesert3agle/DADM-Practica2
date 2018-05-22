@@ -53,12 +53,14 @@ public class TicketTabContainer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_tab_container);
+        setContentView(R.layout.activity_ticket_tab_container);
 
         ButterKnife.bind(this);
 
-        mViewPager.setSaveFromParentEnabled(false);
         mTicketDB = TicketDB.getInstance();
+
+        // Si no hay ningún ticket en la BD se muestra un Toast indicándolo
+        if (mTicketDB.getTicketCount() == 0) Toast.makeText(this, R.string.MSG_START_NO_TICKETS_FOUND, Toast.LENGTH_SHORT).show();
 
         loadTicketsFromDB();
 
@@ -122,7 +124,7 @@ public class TicketTabContainer extends AppCompatActivity {
     }
 
     private void setToolbarTicketCount(){
-        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TAB_CONTAINER), mTicketDB.getTicketCount()));
+        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TICKET_TAB_CONTAINER), mTicketDB.getTicketCount()));
     }
 
     private void loadTicketsFromDB() {
@@ -174,10 +176,11 @@ public class TicketTabContainer extends AppCompatActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         switch (position) {
                             case 1:
-                                Toast.makeText(TicketTabContainer.this, "Has presionado el botón de las facturas.", Toast.LENGTH_SHORT).show();
+                                mDrawer.closeDrawer();
                                 break;
                             case 2:
-                                Toast.makeText(TicketTabContainer.this, "Has presionado el botón de las categorías.", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(TicketTabContainer.this, Categories.class));
+                                mDrawer.closeDrawer();
                                 break;
                             default:
                                 throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");

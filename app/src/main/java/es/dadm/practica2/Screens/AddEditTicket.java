@@ -1,16 +1,20 @@
 package es.dadm.practica2.Screens;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,9 +24,17 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.Text;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import es.dadm.practica2.Util.ImgUtil;
@@ -37,7 +49,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class AddEditTicket extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks{
+public class AddEditTicket extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
     @BindView(R.id.ivImg) ImageView ivTicketImg;
     @BindView(R.id.fabActionMenu) FloatingActionsMenu fabActionMenu;
     @BindView(R.id.fabPhotoFromGallery) FloatingActionButton fabPhotoFromGallery;
@@ -48,13 +60,15 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.spCategories) Spinner spCategories;
     @BindView(R.id.btnCreateEditTicket) Button btnCreateEditTicket;
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.mapTicketLocation) MapView mapTicketLocation;
 
     public final static int CAMERA_REQUEST = 1;
     public final static int GALLERY_REQUEST = 2;
-    public final static int EXTERNAL_REQUEST = 3;
+    public final static int LOCATION_REQUEST = 3;
 
-    LocationManager locationManager;
-    String provider;
+    private GoogleMap mMap;
+
+    private TextRecognizer mTextRecognizer;
 
     private TicketDB mTicketDB = TicketDB.getInstance();
     private String mImgName;
@@ -72,7 +86,11 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         fabPhotoFromGallery.setOnClickListener(this);
         fabPhotoFromCamera.setOnClickListener(this);
 
+        mapTicketLocation.getMapAsync(this);
+
         etPrice.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
+
+        mTextRecognizer = new TextRecognizer.Builder(this).build();
 
         // Se colocan los iconos a los botones de la galería y de la cámara
         fabPhotoFromGallery.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_image, Color.WHITE, 26, AddEditTicket.this));
@@ -86,7 +104,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             ivTicketImg.setImageBitmap(ImgUtil.getImageAsBitmap(mSelTicket.getImgFilename(), this));
             etTitle.setText(mSelTicket.getTitle());
             etDescription.setText(mSelTicket.getDescription());
-            etPrice.setText(String.valueOf(mSelTicket.getPrice()));
+            etPrice.setText(String.valueOf(new DecimalFormat("#.00").format(mSelTicket.getPrice())));
             btnCreateEditTicket.setText(R.string.BTN_EDIT_TICKET);
 
             mToolbar.setTitle(R.string.TITLE_EDIT_TICKET);
@@ -136,7 +154,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
-                Toast.makeText(AddEditTicket.this, "Ha habido un error al procesar la imagen.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddEditTicket.this, R.string.MSG_IMG_PICK_ERROR, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -153,6 +171,8 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
                 // Se pone la imagen en el formulario
                 ivTicketImg.setImageBitmap(bmTicketImg);
+
+                Log.d("OCR", getOCRFromImage(bmTicketImg));
             }
         });
     }
@@ -179,6 +199,19 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private void requestLocation() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.MSG_GALLERY_RAT),
+                    LOCATION_REQUEST, perms);
+        }
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -186,6 +219,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         switch (requestCode) {
@@ -194,6 +228,11 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
                 break;
             case GALLERY_REQUEST:
                 EasyImage.openGallery(AddEditTicket.this, 0);
+                break;
+            case LOCATION_REQUEST:
+                Log.d("Concencido", "concedido");
+                mMap.setMyLocationEnabled(true);
+                break;
         }
     }
 
@@ -242,5 +281,52 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
     public boolean isEditMode(){
         return getIntent().getExtras() != null;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+        // TODO: Before enabling the My Location layer, you must request
+        // location permission from the user. This sample does not include
+        // a request for location permission.
+
+        Log.d("OnMapReady antes de request", "OnMapReady antes de request");
+
+        requestLocation();
+
+        Log.d("OnMapReady despues de request", "OnMapReady despues de request");
+
+        mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMyLocationClickListener(this);
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
+    public String getOCRFromImage(Bitmap bitmap){
+        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+
+        SparseArray<TextBlock> textBlocks = mTextRecognizer.detect(frame);
+        String imageOCR = "";
+
+        for (int i = 0; i < textBlocks.size(); i++) {
+            TextBlock tBlock = textBlocks.valueAt(i);
+
+            for (Text line : tBlock.getComponents()) {
+                imageOCR = imageOCR + line.getValue() + "\n";
+            }
+        }
+
+        return imageOCR;
     }
 }

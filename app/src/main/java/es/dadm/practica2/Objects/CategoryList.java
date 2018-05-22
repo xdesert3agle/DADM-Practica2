@@ -1,5 +1,8 @@
 package es.dadm.practica2.Objects;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -16,15 +19,16 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryPersist {
-    /*private List<Category> mCategoryList;
+public class CategoryList {
+    private List<Category> mCategoryList;
+    private Context mContext;
 
-    public CategoryPersist(){
-        mCategoryList = new ArrayList<Category>();
+    public CategoryList(Context context) {
+        mCategoryList = new ArrayList<>();
+        this.mContext = context;
     }
 
-    public void addCategory(Category category)
-    {
+    public void addCategory(Category category) {
         mCategoryList.add(category);
     }
 
@@ -37,16 +41,20 @@ public class CategoryPersist {
 
         String jsonString = gson.toJson(mCategoryList);
 
-        try{
-            File file = new File(path);
-            FileOutputStream fos = new FileOutputStream(file);
+        try {
+            OutputStreamWriter fout = new OutputStreamWriter(mContext.openFileOutput(path, Context.MODE_PRIVATE));
+            fout.write(jsonString);
+            Log.d("JsonString", jsonString);
+            fout.close();
+
+            /*File file = new File(path);
+            FileOutputStream fos = new FileOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(fos);
 
-            osw.write(jsonString); //Escribimos la información
+            osw.write(jsonString); // Escribimos la información
 
-            osw.close(); //Y cerramos el fichero de texto
-        }
-        catch (IOException e){ //Si hay un error, escribimos el mensaje de error en el Log
+            osw.close(); // Y cerramos el fichero de texto*/
+        } catch (IOException e){ // Si hay un error, escribimos el mensaje de error en el Log
             e.printStackTrace();
         }
 
@@ -56,8 +64,15 @@ public class CategoryPersist {
         String jsonString = "";
 
         try { //Componemos una cadena de texto a partir de varias lineas de archivo, donde estan guardados los datos de los usuarios
+
+            /* fin = new BufferedReader(new InputStreamReader(mContext.openFileInput(rutaFichero)));
+            jsonString = fin.readLine();
+            fin.close();*/
+
             File file = new File(rutaFichero);
             FileInputStream fis = new FileInputStream(file);
+
+            Log.d("Existe archivo", file.exists() ? "Bien" : "Mal");
 
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
@@ -88,8 +103,12 @@ public class CategoryPersist {
         return mCategoryList;
     }
 
-    private String serialize(){
+    private String serialize() {
         return new Gson().toJson(this); // Serializamos la asignatura
-    }*/
+    }
+
+    public int getCount(){
+        return mCategoryList.size();
+    }
 
 }

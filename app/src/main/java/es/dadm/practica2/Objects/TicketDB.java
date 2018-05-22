@@ -148,6 +148,7 @@ public class TicketDB extends SQLiteOpenHelper {
     }
 
     public int getTicketCount(){
+        db = getWritableDatabase();
         return Math.toIntExact(DatabaseUtils.queryNumEntries(db, TABLE_NAME));
     }
 }

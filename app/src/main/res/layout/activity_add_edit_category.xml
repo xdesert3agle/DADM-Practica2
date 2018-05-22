@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    tools:context="es.dadm.practica2.Screens.AddEditTicket">
+    tools:context="es.dadm.practica2.Screens.AddEditCategory">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="@string/LBL_TICKET_TITLE"
+                    app:met_floatingLabelText="@string/LBL_CATEGORY_TITLE"
                     app:met_floatingLabelAlwaysShown="true" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
@@ -74,46 +74,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="@string/LBL_TICKET_DESC"
+                    app:met_floatingLabelText="@string/LBL_CATEGORY_DESC"
                     app:met_floatingLabelAlwaysShown="true" />
-
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/etPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="@string/LBL_TICKET_PRICE"
-                    android:inputType="numberDecimal"
-                    app:met_floatingLabelAlwaysShown="true" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16sp"
-                    android:text="@string/LBL_TICKET_CATEGORY"
-                    android:textSize="11sp"/>
-
-                <Spinner
-                    android:id="@+id/spCategories"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:entries="@array/size_entries" />
-
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/mapTicketLocation"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp" />
 
                 <Button
-                    android:id="@+id/btnCreateEditTicket"
+                    android:id="@+id/btnCreateEditCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/BTN_NEW_TICKET"
+                    android:text="@string/BTN_NEW_CATEGORY"
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
                     android:textSize="15sp"
@@ -145,7 +114,7 @@
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/mlight_accent_light"
             app:fab_size="normal"
-            app:fab_title="@string/FAB_ADD_EDIT_TICKET_GALLERY"
+            app:fab_title="@string/FAB_ADD_EDIT_CATEGORY_GALLERY"
             app:fab_colorPressed="@color/white_pressed"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -154,7 +123,7 @@
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/mlight_accent_light"
             app:fab_size="normal"
-            app:fab_title="@string/FAB_ADD_EDIT_TICKET_CAMERA"
+            app:fab_title="@string/FAB_ADD_EDIT_CATEGORY_CAMERA"
             app:fab_colorPressed="@color/white_pressed"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </android.support.design.widget.CoordinatorLayout>

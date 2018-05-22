@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:name=".Util.Initialize"
@@ -19,7 +19,6 @@
             android:theme="@style/Theme_Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -27,7 +26,13 @@
             android:name=".Screens.AddEditTicket"
             android:label="@string/TITLE_ADD_TICKET"
             android:theme="@style/Theme_Light.NoActionBar" />
-        <activity android:name=".Screens.Categories"></activity>
+        <activity
+            android:name=".Screens.AddEditCategory"
+            android:label="@string/TITLE_ADD_CATEGORY"
+            android:theme="@style/Theme_Light.NoActionBar" />
+        <activity
+            android:name=".Screens.Categories"
+            android:theme="@style/Theme_Light.NoActionBar" />
     </application>
 
 </manifest>

@@ -128,6 +128,6 @@ public class fragmentTiles extends Fragment {
     }
 
     private void setToolbarTicketCount(){
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TAB_CONTAINER), mTicketDB.getTicketCount()));
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TICKET_TAB_CONTAINER), mTicketDB.getTicketCount()));
     }
 }

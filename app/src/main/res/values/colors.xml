@@ -9,8 +9,8 @@
     <!-- Light theme -->
     <color name="mlight_primary">#2196F3</color>
     <color name="mlight_primaryDark">#1976D2</color>
-    <color name="mlight_accent">#FF4081</color>
-
+    <color name="mlight_accent">#F37E21</color>
+    <color name="mlight_accent_light">#f2a160</color>
 
     <!-- Material custom colors -->
     <color name="material_green">#17D326</color>
