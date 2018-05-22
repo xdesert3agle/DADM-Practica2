@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Objects;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;

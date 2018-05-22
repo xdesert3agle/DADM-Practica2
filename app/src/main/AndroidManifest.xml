@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:name=".Initialize"
+        android:name=".Util.Initialize"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme_Light">
         <activity
-            android:name=".TicketTabContainer"
+            android:name=".Screens.TicketTabContainer"
             android:theme="@style/Theme_Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,10 +24,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddEditTicket"
+            android:name=".Screens.AddEditTicket"
             android:label="@string/TITLE_ADD_TICKET"
             android:theme="@style/Theme_Light.NoActionBar" />
-        <activity android:name=".Categories"></activity>
+        <activity android:name=".Screens.Categories"></activity>
     </application>
 
 </manifest>

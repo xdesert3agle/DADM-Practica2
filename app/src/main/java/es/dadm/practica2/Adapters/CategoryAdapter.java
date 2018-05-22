@@ -14,8 +14,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.Category;
-import es.dadm.practica2.ImgUtil;
+import es.dadm.practica2.Objects.Category;
+import es.dadm.practica2.Util.ImgUtil;
 import es.dadm.practica2.Interfaces.ElementActions;
 import es.dadm.practica2.R;
 

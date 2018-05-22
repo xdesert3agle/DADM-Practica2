@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Util;
 
 import android.text.InputFilter;
 import android.text.Spanned;

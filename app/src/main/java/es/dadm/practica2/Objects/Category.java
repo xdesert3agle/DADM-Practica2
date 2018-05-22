@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Objects;
 
 public class Category {
     private String title;

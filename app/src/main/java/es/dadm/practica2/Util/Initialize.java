@@ -1,6 +1,8 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Util;
 
 import android.app.Application;
+
+import es.dadm.practica2.Objects.TicketDB;
 
 public class Initialize extends Application{
 

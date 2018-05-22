@@ -13,10 +13,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.ImgUtil;
+import es.dadm.practica2.Util.ImgUtil;
 import es.dadm.practica2.Interfaces.ElementActions;
 import es.dadm.practica2.R;
-import es.dadm.practica2.Ticket;
+import es.dadm.practica2.Objects.Ticket;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>{
     private List<Ticket> mTicketList;

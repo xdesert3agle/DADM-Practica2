@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Screens;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,9 +25,13 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dadm.practica2.Util.ImgUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dadm.practica2.Adapters.TabsAdapter;
+import es.dadm.practica2.R;
+import es.dadm.practica2.Objects.Ticket;
+import es.dadm.practica2.Objects.TicketDB;
 
 
 public class TicketTabContainer extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Screens;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -19,17 +19,19 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import es.dadm.practica2.Util.ImgUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dadm.practica2.Adapters.TileAdapter;
 import es.dadm.practica2.Interfaces.ElementActions;
-import es.dadm.practica2.Adapters.ListAdapter;
+import es.dadm.practica2.R;
+import es.dadm.practica2.Objects.Ticket;
+import es.dadm.practica2.Objects.TicketDB;
 
-public class fragmentList extends Fragment {
+public class fragmentTiles extends Fragment {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
 
-    public static final String TAG_TICKET_POSITION = "Ticket position";
-
-    private ListAdapter mAdapter;
+    private TileAdapter mAdapter;
     private List<Ticket> mTicketList;
     private TicketDB mTicketDB;
     private int mSelTicketPosition;
@@ -42,13 +44,14 @@ public class fragmentList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tickets_list_mode, container, false);
+        View view = inflater.inflate(R.layout.fragment_tickets_tile_mode, container, false);
         ButterKnife.bind(this, view);
+        registerForContextMenu(mRecycler);
 
         mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
-        mAdapter = new ListAdapter(mTicketList, getActivity(), new ElementActions() {
+        mAdapter = new TileAdapter(mTicketList, getActivity(), new ElementActions() {
             @Override
             public void onItemClicked(int position) {
                 startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, mTicketList.get(position).getId()));
@@ -64,7 +67,7 @@ public class fragmentList extends Fragment {
         });
 
         mRecycler.setAdapter(mAdapter);
-        mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         return view;
     }
@@ -72,9 +75,7 @@ public class fragmentList extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         refreshTicketList();
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -104,7 +105,7 @@ public class fragmentList extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser && mTicketDB != null) {
+        if (isVisibleToUser && mTicketDB != null) {
             refreshTicketList();
         }
     }

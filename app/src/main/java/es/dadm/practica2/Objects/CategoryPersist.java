@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

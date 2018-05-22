@@ -1,19 +1,11 @@
 package es.dadm.practica2.Adapters;
 
-
-import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import es.dadm.practica2.R;
-import es.dadm.practica2.fragmentTiles;
 
 public class TabsAdapter extends FragmentPagerAdapter {
 

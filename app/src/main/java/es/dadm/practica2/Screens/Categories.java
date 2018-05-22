@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Screens;
 
 import android.content.DialogInterface;
 import android.content.Intent;

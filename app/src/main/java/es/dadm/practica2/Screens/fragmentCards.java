@@ -1,4 +1,4 @@
-package es.dadm.practica2;
+package es.dadm.practica2.Screens;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,10 +19,14 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import es.dadm.practica2.Util.ImgUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dadm.practica2.Interfaces.ElementActions;
 import es.dadm.practica2.Adapters.CardAdapter;
+import es.dadm.practica2.R;
+import es.dadm.practica2.Objects.Ticket;
+import es.dadm.practica2.Objects.TicketDB;
 
 public class fragmentCards extends Fragment {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
