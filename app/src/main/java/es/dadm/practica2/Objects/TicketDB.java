@@ -24,7 +24,9 @@ public class TicketDB extends SQLiteOpenHelper {
     private static final String COL_PRICE = "PRICE";
     private static final String COL_DATE = "DATE";
     private static final String COL_PHOTO = "PHOTO";
-    private static final String[] COLUMNS = {COL_ID, COL_CATEGORY_ID, COL_TITLE, COL_DESCRIPTION, COL_PRICE, COL_DATE, COL_PHOTO};
+    private static final String COL_LATITUDE = "LATITUDE";
+    private static final String COL_LONGITUDE = "LONGITUDE";
+    private static final String[] COLUMNS = {COL_ID, COL_CATEGORY_ID, COL_TITLE, COL_DESCRIPTION, COL_PRICE, COL_DATE, COL_PHOTO, COL_LATITUDE, COL_LONGITUDE};
     private static final String WHERE_CLAUSE = "_id = ";
 
     private SQLiteDatabase db;
@@ -38,7 +40,9 @@ public class TicketDB extends SQLiteOpenHelper {
             COL_DESCRIPTION + " TEXT NOT NULL, " +
             COL_PRICE + " DOUBLE NOT NULL, " +
             COL_DATE + " LONG NOT NULL, " +
-            COL_PHOTO + " TEXT NOT NULL)";
+            COL_PHOTO + " TEXT NOT NULL, " +
+            COL_LATITUDE + " DOUBLE, " +
+            COL_LONGITUDE + " DOUBLE)";
 
     private TicketDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -118,6 +122,8 @@ public class TicketDB extends SQLiteOpenHelper {
         ticket.setPrice(cursor.getDouble(4));
         ticket.setDate(new Date(cursor.getLong(5)));
         ticket.setImgFilename(cursor.getString(6));
+        ticket.setLatitude(cursor.getDouble(7));
+        ticket.setLongitude(cursor.getDouble(8));
 
         return ticket;
     }
@@ -130,7 +136,9 @@ public class TicketDB extends SQLiteOpenHelper {
         newRecord.put(COL_DESCRIPTION, ticket.getDescription());
         newRecord.put(COL_PRICE, ticket.getPrice());
         newRecord.put(COL_DATE, ticket.getDate().getTime());
-        newRecord.put(COL_PHOTO,ticket.getImgFilename());
+        newRecord.put(COL_PHOTO, ticket.getImgFilename());
+        newRecord.put(COL_LATITUDE, ticket.getLatitude());
+        newRecord.put(COL_LONGITUDE, ticket.getLongitude());
 
         return newRecord;
     }

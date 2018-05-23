@@ -1,5 +1,7 @@
 package es.dadm.practica2.Screens;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ import es.dadm.practica2.Adapters.TabsAdapter;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Objects.Ticket;
 import es.dadm.practica2.Objects.TicketDB;
+import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class TicketTabContainer extends AppCompatActivity {
@@ -108,6 +111,7 @@ public class TicketTabContainer extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.addBill: // Registrar una factura nueva
                 startActivity(new Intent(TicketTabContainer.this, AddEditTicket.class));
+
                 break;
             default:
                 throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
@@ -133,6 +137,23 @@ public class TicketTabContainer extends AppCompatActivity {
 
     public int getTicketCount() {
         return mTicketList.size();
+    }
+
+    private boolean hasLocationPermision(){
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestLocation() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        EasyPermissions.requestPermissions(this, getString(R.string.MSG_GALLERY_RAT), AddEditTicket.LOCATION_REQUEST, perms);
     }
 
     public void setUpDrawer() {
@@ -179,8 +200,8 @@ public class TicketTabContainer extends AppCompatActivity {
                                 mDrawer.closeDrawer();
                                 break;
                             case 2:
-                                startActivity(new Intent(TicketTabContainer.this, Categories.class));
                                 mDrawer.closeDrawer();
+                                startActivity(new Intent(TicketTabContainer.this, Categories.class));
                                 break;
                             default:
                                 throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");

@@ -103,10 +103,26 @@
                     android:paddingBottom="16dp"
                     android:entries="@array/size_entries" />
 
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/mapTicketLocation"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp" />
+                <LinearLayout
+                    android:id="@+id/llLocationContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.gms.maps.MapView
+                        android:id="@+id/mapTicketLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="16dp" />
+
+                    <TextView
+                        android:id="@+id/tvFormattedAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textAlignment="center"
+                        android:textSize="16sp" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btnCreateEditTicket"

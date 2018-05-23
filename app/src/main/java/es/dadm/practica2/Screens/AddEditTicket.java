@@ -19,21 +19,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -44,6 +54,11 @@ import es.dadm.practica2.Util.DecimalDigitsInputFilter;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Objects.Ticket;
 import es.dadm.practica2.Objects.TicketDB;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -58,19 +73,25 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.etDescription) EditText etDescription;
     @BindView(R.id.etPrice) EditText etPrice;
     @BindView(R.id.spCategories) Spinner spCategories;
+    @BindView(R.id.tvFormattedAddress) TextView tvFormattedAddress;
     @BindView(R.id.btnCreateEditTicket) Button btnCreateEditTicket;
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.llLocationContainer) LinearLayout llLocationContainer;
     @BindView(R.id.mapTicketLocation) MapView mapTicketLocation;
 
+    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
     public final static int CAMERA_REQUEST = 1;
     public final static int GALLERY_REQUEST = 2;
     public final static int LOCATION_REQUEST = 3;
 
     private GoogleMap mMap;
+    private Location mLocation;
+    Bundle mMapBundle = null;
 
     private TextRecognizer mTextRecognizer;
 
     private TicketDB mTicketDB = TicketDB.getInstance();
+    private OkHttpClient mHTTPClient = new OkHttpClient();
     private String mImgName;
     private Ticket mNewTicket;
     private Ticket mSelTicket;
@@ -86,7 +107,13 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         fabPhotoFromGallery.setOnClickListener(this);
         fabPhotoFromCamera.setOnClickListener(this);
 
-        mapTicketLocation.getMapAsync(this);
+        if (hasLocationPermision()){
+            initMap();
+        }
+
+        if (savedInstanceState != null) {
+            mMapBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        }
 
         etPrice.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
 
@@ -106,6 +133,10 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             etDescription.setText(mSelTicket.getDescription());
             etPrice.setText(String.valueOf(new DecimalFormat("#.00").format(mSelTicket.getPrice())));
             btnCreateEditTicket.setText(R.string.BTN_EDIT_TICKET);
+
+            if (mSelTicket.getLatitude() != 0 && mSelTicket.getLongitude() != 0){
+                printFormattedAddress();
+            }
 
             mToolbar.setTitle(R.string.TITLE_EDIT_TICKET);
         } else { // Si el usuario ha entrado a añadir un ticket nuevo...
@@ -177,6 +208,57 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        llLocationContainer.setVisibility(View.GONE);
+
+        if (hasLocationPermision()) {
+            llLocationContainer.setVisibility(View.VISIBLE);
+            mapTicketLocation.onResume();
+        } else {
+            requestLocation();
+        }
+    }
+
+    private void requestLocation() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            llLocationContainer.setVisibility(View.VISIBLE);
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.MSG_LOCATION_RAT), AddEditTicket.LOCATION_REQUEST, perms);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (hasLocationPermision()) {
+            mapTicketLocation.onPause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (hasLocationPermision()) {
+            mapTicketLocation.onDestroy();
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        if (hasLocationPermision()) {
+            mapTicketLocation.onLowMemory();
+        }
+    }
+
     private void openCamera() {
         String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -199,18 +281,16 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private void requestLocation() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private boolean hasLocationPermision(){
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            mMap.setMyLocationEnabled(true);
-        } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.MSG_GALLERY_RAT),
-                    LOCATION_REQUEST, perms);
-        }
+        return EasyPermissions.hasPermissions(this, perms);
     }
 
+    private void initMap(){
+        mapTicketLocation.onCreate(mMapBundle);
+        mapTicketLocation.getMapAsync(this);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -230,8 +310,9 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
                 EasyImage.openGallery(AddEditTicket.this, 0);
                 break;
             case LOCATION_REQUEST:
-                Log.d("Concencido", "concedido");
-                mMap.setMyLocationEnabled(true);
+                llLocationContainer.setVisibility(View.VISIBLE);
+                initMap();
+
                 break;
         }
     }
@@ -252,6 +333,11 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         mNewTicket.setPrice(Double.parseDouble(etPrice.getText().toString()));
         mNewTicket.setCategory(spCategories.getSelectedItem().toString());
         mNewTicket.setImgFilename(mImgName);
+
+        if (hasLocationPermision()) {
+            mNewTicket.setLatitude(mLocation.getLatitude());
+            mNewTicket.setLongitude(mLocation.getLongitude());
+        }
     }
 
     public void insertNewTicket(){
@@ -283,34 +369,89 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         return getIntent().getExtras() != null;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        // TODO: Before enabling the My Location layer, you must request
-        // location permission from the user. This sample does not include
-        // a request for location permission.
 
-        Log.d("OnMapReady antes de request", "OnMapReady antes de request");
+        if (hasLocationPermision()){
+            if (!isEditMode()){
+                mMap.setMyLocationEnabled(true);
 
-        requestLocation();
+                //mMap.moveCamera(CameraUpdateFactory.newLatLng(mLocation.get));
 
-        Log.d("OnMapReady despues de request", "OnMapReady despues de request");
+                mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                    @Override
+                    public void onMyLocationChange(Location location) {
+                        mLocation = location;
 
-        mMap.setOnMyLocationButtonClickListener(this);
-        mMap.setOnMyLocationClickListener(this);
+                        LatLng myLatLng = new LatLng(mLocation.getLatitude(),
+                                mLocation.getLongitude());
+
+                        CameraPosition myPosition = new CameraPosition.Builder()
+                                .target(myLatLng).zoom(17).bearing(90).tilt(30).build();
+                        mMap.moveCamera(
+                                CameraUpdateFactory.newCameraPosition(myPosition));
+                    }
+                });
+
+                mMap.setOnMyLocationButtonClickListener(this);
+                mMap.setOnMyLocationClickListener(this);
+            } else {
+                if (mSelTicket.getLatitude() != 0 && mSelTicket.getLongitude() != 0) {
+                    markTicketLocationOnMap();
+                } else {
+                    llLocationContainer.setVisibility(View.GONE);
+                }
+
+            }
+        }
+    }
+
+    public void markTicketLocationOnMap(){
+        LatLng latLng = new LatLng(mSelTicket.getLatitude(), mSelTicket.getLongitude());
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(""));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        mMap.animateCamera(cameraUpdate);
     }
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
         return false;
+    }
+
+    public void printFormattedAddress() {
+        Request request = new Request.Builder()
+                .url(String.format(getResources().getString(R.string.GEOCODING_HTTP_REQUEST_URL), mSelTicket.getLatitude(), mSelTicket.getLongitude(), getResources().getString(R.string.GEOCODING_API_KEY)))
+                .build();
+
+        mHTTPClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                JsonObject jsonGeolocation = new JsonParser().parse(response.body().string()).getAsJsonObject();
+
+                final String formattedAddress = jsonGeolocation.get("results").getAsJsonArray().get(2).getAsJsonObject().get("formatted_address").getAsString();
+
+                AddEditTicket.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvFormattedAddress.setText(formattedAddress);
+                    }
+                });
+            }
+        });
     }
 
     public String getOCRFromImage(Bitmap bitmap){

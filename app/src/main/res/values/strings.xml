@@ -56,7 +56,12 @@
     <string name="MSG_DELETED_CATEGORY">La categoría \'%s\' ha sido eliminada.</string>
     <string name="MSG_GALLERY_RAT">La app necesita acceso a tu Galería para poder seleccionar una imagen para los tickets o para las categorías.</string>
     <string name="MSG_CAMERA_RAT">La app necesita acceso a la cámara para poder obtener una foto para los tickets o para las categorías.</string>
+    <string name="MSG_LOCATION_RAT">La app necesita acceso a tu ubicación actual para poder guardar la localización donde se creó el ticket.</string>
     <string name="MSG_IMG_PICK_ERROR">Ha habido un error al procesar la imagen.</string>
+
+    <string name="GMAPS_API_KEY">AIzaSyACB4HcrcWeWaVdMDZRKd9RtJnqgwU34x8</string>
+    <string name="GEOCODING_API_KEY">AIzaSyAllfK-ZekF8XFsiXC1L4tafHwWIrr_H-A</string>
+    <string name="GEOCODING_HTTP_REQUEST_URL">https://maps.googleapis.com/maps/api/geocode/json?latlng=%1$.6f,%2$.6f&amp;key=%3$s</string>
 
 
     <string-array name="size_entries">
