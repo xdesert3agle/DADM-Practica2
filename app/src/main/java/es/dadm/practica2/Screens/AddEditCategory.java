@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,11 +19,6 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.text.Text;
-import com.google.android.gms.vision.text.TextBlock;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 
 import java.io.File;
@@ -34,8 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dadm.practica2.Objects.Category;
-import es.dadm.practica2.Objects.CategoryList;
-import es.dadm.practica2.Objects.Ticket;
+import es.dadm.practica2.Objects.CategoryUtil;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Util.ImgUtil;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -55,12 +47,11 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
 
     public final static int CAMERA_REQUEST = 1;
     public final static int GALLERY_REQUEST = 2;
-    private final String CATEGORY_FILE_PATH = "categories.txt";
 
-    private String mImgName;
     private Category mNewCategory;
     private Category mSelCategory;
-    private CategoryList mCategoryList = new CategoryList(this);
+    private String mImgName;
+    private CategoryUtil mCategoryUtil = CategoryUtil.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +91,6 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
             case R.id.btnCreateEditCategory:
                 if (!isEditMode()) {
                     if (!emptyFieldsLeft()){
-                        Log.d("Info", "Vaya insercion loco");
                         insertNewCategory();
                     } else {
                         Toast.makeText(this, R.string.MSG_EMPTY_FIELDS, Toast.LENGTH_SHORT).show();
@@ -207,6 +197,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         mNewCategory = new Category();
 
         // Se recoge la información del formulario
+        mNewCategory.setId(getValidID());
         mNewCategory.setTitle(etTitle.getText().toString());
         mNewCategory.setDescription(etDescription.getText().toString());
         mNewCategory.setImgFilename(mImgName);
@@ -214,9 +205,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
 
     public void insertNewCategory(){
         fetchNewCategoryInfo();
-        Log.d("Cantidad antes", String.valueOf(mCategoryList.getCount()));
-        mCategoryList.persistToJson(CATEGORY_FILE_PATH, mNewCategory);
-        Log.d("Cantidad despues", String.valueOf(mCategoryList.getCount()));
+        mCategoryUtil.addCategory(mNewCategory, this);
     }
 
     public void updateSelectedCategory(){
@@ -230,11 +219,18 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
             mSelCategory.setImgFilename(mImgName);
         }
 
-        mCategoryList.addCategory(mSelCategory);
+        mCategoryUtil.addCategory(mSelCategory, this);
     }
 
     public boolean emptyFieldsLeft(){
         return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || mImgName == null;
+    }
+
+    public int getValidID(){
+        int categoryListSize = mCategoryUtil.getCount();
+
+        Log.d("Nueva ID válida", String.valueOf(mCategoryUtil.getCategory(categoryListSize).getId()));
+        return mCategoryUtil.getCategory(categoryListSize).getId();
     }
 
     public boolean isEditMode(){

@@ -1,9 +1,7 @@
 package es.dadm.practica2.Screens;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -32,11 +29,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.Adapters.TileAdapter;
+import es.dadm.practica2.Adapters.CategoryAdapter;
 import es.dadm.practica2.Interfaces.ElementActions;
 import es.dadm.practica2.Objects.Category;
-import es.dadm.practica2.Objects.CategoryList;
-import es.dadm.practica2.Objects.TicketDB;
+import es.dadm.practica2.Objects.CategoryUtil;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Util.ImgUtil;
 
@@ -45,13 +41,12 @@ public class Categories extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
     private Drawer mDrawer;
-    private TileAdapter mAdapter;
+    private CategoryAdapter mAdapter;
+    private CategoryUtil mCategoryUtil = CategoryUtil.getInstance();
     private List<Category> mCategoryList = new ArrayList<>();
-    private TicketDB mTicketDB = TicketDB.getInstance();
-    private CategoryList categoryPersist = new CategoryList(this);
-    private int mSelTicketPosition;
+    private int mSelCategoryPosition;
 
-    private final String CATEGORY_FILE_PATH = "categories.txt";
+    private final String TAG_CATEGORY_POSITION = "Category position";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +57,7 @@ public class Categories extends AppCompatActivity {
 
         registerForContextMenu(mRecycler);
 
-        mCategoryList = getCategoryList();
-
-        Toast.makeText(this, String.format("Número de categorías: %d", mCategoryList.size()), Toast.LENGTH_SHORT).show();
+        mCategoryList = mCategoryUtil.getCategories(this);
 
         setSupportActionBar(mToolbar);
         setToolbarCategoryCount();
@@ -74,23 +67,30 @@ public class Categories extends AppCompatActivity {
         // Si no hay ninguna categoría en el array se muestra un Toast indicándolo
         if (mCategoryList.size() == 0) Toast.makeText(this, R.string.MSG_START_NO_CATEGORIES_FOUND, Toast.LENGTH_SHORT).show();
 
-        /*mAdapter = new TileAdapter(mCategoryList, this, new ElementActions() {
+        mAdapter = new CategoryAdapter(mCategoryList, this, new ElementActions() {
             @Override
             public void onItemClicked(int position) {
-                startActivity(new Intent(Categories.this, AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, mTicketList.get(position).getId()));
+                startActivity(new Intent(Categories.this, AddEditCategory.class).putExtra(TAG_CATEGORY_POSITION, mCategoryList.get(position).getId()));
             }
 
             @Override
             public void onCreateContextMenu(View view, ContextMenu menu, int position) {
-                mSelTicketPosition = position;
+                mSelCategoryPosition = position;
 
                 MenuInflater inflater = new MenuInflater(Categories.this);
                 inflater.inflate(R.menu.long_press_menu, menu);
             }
-        });*/
+        });
 
-        /*mRecycler.setAdapter(mAdapter);
-        mRecycler.setLayoutManager(new GridLayoutManager(this, 2));*/
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshCategotyList();
+        setToolbarCategoryCount();
     }
 
     @Override
@@ -120,12 +120,12 @@ public class Categories extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public List<Category> getCategoryList(){
-        return categoryPersist.loadFromJson(CATEGORY_FILE_PATH);
-    }
-
     private void setToolbarCategoryCount(){
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_CATEGORY_CONTAINER), mCategoryList.size()));
+    }
+
+    public void refreshCategotyList(){
+        mAdapter.notifyDataSetChanged();
     }
 
     public void setUpDrawer() {
@@ -185,5 +185,7 @@ public class Categories extends AppCompatActivity {
                 })
                 .withActionBarDrawerToggle(true)
                 .build();
+
+        mDrawer.setSelection(2);
     }
 }

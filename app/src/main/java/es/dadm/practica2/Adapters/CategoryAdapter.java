@@ -78,8 +78,4 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.TileVi
     public int getItemCount() {
         return mCategoryList.size();
     }
-
-    public void setContent(List<Category> newTicketList){
-        mCategoryList = newTicketList;
-    }
 }

@@ -46,7 +46,7 @@ public class TicketDB extends SQLiteOpenHelper {
 
     public static void init(Context context){
         if (instance == null){
-            instance = new TicketDB(context);
+            instance = new TicketDB(context.getApplicationContext());
         }
     }
 

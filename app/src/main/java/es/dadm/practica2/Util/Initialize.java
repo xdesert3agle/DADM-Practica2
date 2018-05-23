@@ -2,6 +2,7 @@ package es.dadm.practica2.Util;
 
 import android.app.Application;
 
+import es.dadm.practica2.Objects.CategoryUtil;
 import es.dadm.practica2.Objects.TicketDB;
 
 public class Initialize extends Application{
@@ -11,5 +12,6 @@ public class Initialize extends Application{
         super.onCreate();
 
         TicketDB.init(getApplicationContext());
+        CategoryUtil.init();
     }
 }

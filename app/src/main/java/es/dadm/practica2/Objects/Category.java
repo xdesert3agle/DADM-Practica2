@@ -1,11 +1,20 @@
 package es.dadm.practica2.Objects;
 
 public class Category {
+    private int id;
     private String title;
     private String description;
     private String imgFilename;
 
     public Category(){}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
