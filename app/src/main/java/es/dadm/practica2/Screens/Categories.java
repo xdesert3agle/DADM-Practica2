@@ -219,5 +219,7 @@ public class Categories extends AppCompatActivity {
                 })
                 .withActionBarDrawerToggle(true)
                 .build();
+
+        mDrawer.setSelection(item2);
     }
 }
