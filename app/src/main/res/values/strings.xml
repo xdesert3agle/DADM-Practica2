@@ -2,7 +2,7 @@
     <string name="app_name">Practica2</string>
 
     <!-- DRAWER MENU -->
-    <string name="DRAWER_OPTION_BILLS">Facturas</string>
+    <string name="DRAWER_OPTION_TICKETS">Tickets</string>
     <string name="DRAWER_OPTION_CATEGORIES">Categorías</string>
     <string name="DRAWER_OPTION_SETTINGS">Settings</string>
 

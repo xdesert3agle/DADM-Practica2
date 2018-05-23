@@ -165,7 +165,7 @@ public class Categories extends AppCompatActivity {
     public void setUpDrawer() {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem()
                 .withIdentifier(0)
-                .withName(R.string.DRAWER_OPTION_BILLS)
+                .withName(R.string.DRAWER_OPTION_TICKETS)
                 .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24, Categories.this));
 
         PrimaryDrawerItem item2 = new PrimaryDrawerItem()
@@ -219,7 +219,5 @@ public class Categories extends AppCompatActivity {
                 })
                 .withActionBarDrawerToggle(true)
                 .build();
-
-        mDrawer.setSelection(2);
     }
 }
