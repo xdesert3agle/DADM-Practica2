@@ -75,6 +75,7 @@ public class fragmentTiles extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         refreshTicketList();
     }
 
@@ -82,7 +83,7 @@ public class fragmentTiles extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         if (getUserVisibleHint()) {
             switch (item.getItemId()){
-                case R.id.lpDeleteTicket:
+                case R.id.lpDeleteElement:
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage(R.string.MSG_TICKET_DELETE_CONFIRM)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

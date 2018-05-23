@@ -1,7 +1,9 @@
 package es.dadm.practica2.Screens;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -46,7 +48,7 @@ public class Categories extends AppCompatActivity {
     private List<Category> mCategoryList = new ArrayList<>();
     private int mSelCategoryPosition;
 
-    private final String TAG_CATEGORY_POSITION = "Category position";
+    public static final String TAG_CATEGORY_POSITION = "Category position";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,12 +122,44 @@ public class Categories extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.lpDeleteElement:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.MSG_CATEGORY_DELETE_CONFIRM)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteSelectedCategory();
+                                refreshCategotyList();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .show();
+                return true;
+        }
+
+        return false;
+    }
+
     private void setToolbarCategoryCount(){
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_CATEGORY_CONTAINER), mCategoryList.size()));
     }
 
     public void refreshCategotyList(){
         mAdapter.notifyDataSetChanged();
+    }
+
+    public void deleteSelectedCategory(){
+        // Se recupera la categoría sobre la que el usuario ha hecho la pulsación larga
+        Category selectedCategory = mCategoryUtil.getCategory(mSelCategoryPosition);
+
+        ImgUtil.deleteImage(selectedCategory.getImgFilename(), this); // // Se borra tanto la imagen de la categoría de la memoria externa del teléfono...
+        mCategoryUtil.deleteCategory(mSelCategoryPosition, this); // ...como la categoría del array de categorías
+
+        Toast.makeText(this, String.format(getString(R.string.MSG_DELETED_CATEGORY), selectedCategory.getTitle()), Toast.LENGTH_SHORT).show();
+        setToolbarCategoryCount();
     }
 
     public void setUpDrawer() {

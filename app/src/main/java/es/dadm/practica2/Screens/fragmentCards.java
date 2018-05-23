@@ -82,7 +82,7 @@ public class fragmentCards extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         if (getUserVisibleHint()) {
             switch (item.getItemId()){
-                case R.id.lpDeleteTicket:
+                case R.id.lpDeleteElement:
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage(R.string.MSG_TICKET_DELETE_CONFIRM)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -120,8 +120,8 @@ public class fragmentCards extends Fragment {
         // Se recupera el ticket sobre el que el usuario ha hecho la pulsación larga
         Ticket selectedTicket = mTicketList.get(mSelTicketPosition);
 
-        ImgUtil.deleteImage(selectedTicket.getImgFilename(), getActivity()); // Se borra tanto el ticket de la base de datos...
-        mTicketDB.deleteTicket(selectedTicket); // ...como la imagen de la factura de la memoria externa del teléfono
+        ImgUtil.deleteImage(selectedTicket.getImgFilename(), getActivity()); // Se borra tanto la imagen de la factura de la memoria externa del teléfono...
+        mTicketDB.deleteTicket(selectedTicket); // ...como el ticket de la base de datos
 
         Toast.makeText(getActivity(), String.format(getString(R.string.MSG_DELETED_TICKET), selectedTicket.getTitle()), Toast.LENGTH_SHORT).show();
         setToolbarTicketCount();

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/lpDeleteTicket"
+        android:id="@+id/lpDeleteElement"
         app:showAsAction="never"
         android:title="@string/LPRESS_DELETE_OPT"/>
 </menu>

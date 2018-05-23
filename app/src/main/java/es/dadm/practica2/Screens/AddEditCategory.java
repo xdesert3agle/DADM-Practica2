@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +51,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
 
     private Category mNewCategory;
     private Category mSelCategory;
+    private int mSelCategoryPosition;
     private String mImgName;
     private CategoryUtil mCategoryUtil = CategoryUtil.getInstance();
 
@@ -68,20 +70,34 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         fabPhotoFromGallery.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_image, Color.WHITE, 26, AddEditCategory.this));
         fabPhotoFromCamera.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_camera, Color.WHITE, 26, AddEditCategory.this));
 
-        /*if (isEditMode()){ // Si el usuario ha entrado a editar un ticket...
-            int targetCategoryID = getIntent().getExtras().getInt(fragmentList.TAG_TICKET_POSITION);
 
-            mSelCategory = mTicketDB.getTicketWithID(targetCategoryID);
+
+        if (isEditMode()){ // Si el usuario ha entrado a editar una categoría...
+            mSelCategoryPosition = getIntent().getExtras().getInt(Categories.TAG_CATEGORY_POSITION);
+
+            mSelCategory = mCategoryUtil.getCategory(mSelCategoryPosition);
 
             ivCategoryImg.setImageBitmap(ImgUtil.getImageAsBitmap(mSelCategory.getImgFilename(), this));
             etTitle.setText(mSelCategory.getTitle());
             etDescription.setText(mSelCategory.getDescription());
-            btnCreateEditTicket.setText(R.string.BTN_EDIT_CATEGORY);
+            btnCreateEditCategory.setText(R.string.BTN_EDIT_CATEGORY);
 
             mToolbar.setTitle(R.string.TITLE_EDIT_CATEGORY);
-        } else { // Si el usuario ha entrado a añadir un ticket nuevo...*/
+        } else { // Si el usuario ha entrado a añadir una categoría nueva...
             mToolbar.setTitle(R.string.TITLE_ADD_CATEGORY);
-        //}
+        }
+
+        setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
     }
 
     @Override
@@ -197,7 +213,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         mNewCategory = new Category();
 
         // Se recoge la información del formulario
-        mNewCategory.setId(getValidID());
+        mNewCategory.setId(mCategoryUtil.getNewID());
         mNewCategory.setTitle(etTitle.getText().toString());
         mNewCategory.setDescription(etDescription.getText().toString());
         mNewCategory.setImgFilename(mImgName);
@@ -219,18 +235,11 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
             mSelCategory.setImgFilename(mImgName);
         }
 
-        mCategoryUtil.addCategory(mSelCategory, this);
+        mCategoryUtil.updateCategory(mSelCategoryPosition, mSelCategory, this);
     }
 
     public boolean emptyFieldsLeft(){
         return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || mImgName == null;
-    }
-
-    public int getValidID(){
-        int categoryListSize = mCategoryUtil.getCount();
-
-        Log.d("Nueva ID válida", String.valueOf(mCategoryUtil.getCategory(categoryListSize).getId()));
-        return mCategoryUtil.getCategory(categoryListSize).getId();
     }
 
     public boolean isEditMode(){
