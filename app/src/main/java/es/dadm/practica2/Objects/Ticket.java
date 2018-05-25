@@ -1,13 +1,11 @@
 package es.dadm.practica2.Objects;
 
-import android.graphics.Bitmap;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+
+import es.dadm.practica2.Util.Init;
 
 public class Ticket {
     private int id;
@@ -22,6 +20,7 @@ public class Ticket {
 
     public Ticket(){
         this.date = new Date();
+        this.imgFilename = Init.DEFAULT_IMG;
     }
 
     public int getId() {

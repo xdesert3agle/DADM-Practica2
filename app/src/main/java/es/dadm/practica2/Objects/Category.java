@@ -1,5 +1,9 @@
 package es.dadm.practica2.Objects;
 
+import android.graphics.BitmapFactory;
+
+import es.dadm.practica2.Util.ImgUtil;
+
 public class Category {
     private int id;
     private String title;

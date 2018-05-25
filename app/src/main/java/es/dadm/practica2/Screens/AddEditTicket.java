@@ -16,6 +16,7 @@ import android.text.InputFilter;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,8 +46,11 @@ import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
+import es.dadm.practica2.Objects.Category;
+import es.dadm.practica2.Objects.CategoryUtil;
 import es.dadm.practica2.Util.ImgUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,21 +84,22 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.mapTicketLocation) MapView mapTicketLocation;
 
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
-    public final static int CAMERA_REQUEST = 1;
-    public final static int GALLERY_REQUEST = 2;
-    public final static int LOCATION_REQUEST = 3;
-
-    private GoogleMap mMap;
-    private Location mLocation;
-    Bundle mMapBundle = null;
+    public static final int CAMERA_REQUEST = 1;
+    public static final int GALLERY_REQUEST = 2;
+    public static final int LOCATION_REQUEST = 3;
 
     private TextRecognizer mTextRecognizer;
-
     private TicketDB mTicketDB = TicketDB.getInstance();
+    private CategoryUtil mCategoryUtil = CategoryUtil.getInstance();
+    private List<Category> mCategoryList = new ArrayList<>();
+    private List<String> mCategoryNamesList = new ArrayList<>();
     private OkHttpClient mHTTPClient = new OkHttpClient();
     private String mImgName;
     private Ticket mNewTicket;
     private Ticket mSelTicket;
+    private GoogleMap mMap;
+    private Location mLocation;
+    private Bundle mMapBundle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +119,12 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         if (savedInstanceState != null) {
             mMapBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
+
+        mCategoryList = mCategoryUtil.getCategories(this);
+        fillCategoryNamesArray();
+
+        ArrayAdapter<String> spCategoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCategoryNamesList);
+        spCategories.setAdapter(spCategoryAdapter);
 
         etPrice.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
 
@@ -469,5 +480,13 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
 
         return imageOCR;
+    }
+
+    public void fillCategoryNamesArray(){
+        int size = mCategoryList.size();
+
+        for (int i = 0; i < size; i++) {
+            mCategoryNamesList.add(mCategoryList.get(i).getTitle());
+        }
     }
 }

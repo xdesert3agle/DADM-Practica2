@@ -62,6 +62,7 @@
     <string name="GMAPS_API_KEY">AIzaSyACB4HcrcWeWaVdMDZRKd9RtJnqgwU34x8</string>
     <string name="GEOCODING_API_KEY">AIzaSyAllfK-ZekF8XFsiXC1L4tafHwWIrr_H-A</string>
     <string name="GEOCODING_HTTP_REQUEST_URL">https://maps.googleapis.com/maps/api/geocode/json?latlng=%1$.6f,%2$.6f&amp;key=%3$s</string>
+    <string name="DEFAULT_CATEGORY_TITLE">Sin categoría</string>
 
 
     <string-array name="size_entries">

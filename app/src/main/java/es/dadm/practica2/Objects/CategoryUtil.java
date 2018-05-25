@@ -1,7 +1,6 @@
 package es.dadm.practica2.Objects;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,7 +8,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,19 +16,23 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dadm.practica2.R;
+import es.dadm.practica2.Util.Init;
+
 public class CategoryUtil {
     private static CategoryUtil instance = null;
     private static final String CATEGORY_FILE = "categories.txt";
 
     private List<Category> mCategoryList;
 
-    private CategoryUtil() {
+    private CategoryUtil(Context context) {
         mCategoryList = new ArrayList<>();
+        mCategoryList.add(getStockCategory(context));
     }
 
-    public static void init(){
+    public static void init(Context context){
         if (instance == null){
-            instance = new CategoryUtil();
+            instance = new CategoryUtil(context);
         }
     }
 
@@ -103,11 +105,30 @@ public class CategoryUtil {
     }
 
     public int getNewID(){
-        return mCategoryList.get(mCategoryList.size() - 1).getId() + 1;
+        int newID;
+
+        if (mCategoryList.size() == 0){
+            newID = 0;
+        } else {
+            newID = mCategoryList.get(mCategoryList.size() - 1).getId() + 1;
+        }
+
+        return newID;
     }
 
     public Category getCategory(int categoryPosition){
         return mCategoryList.get(categoryPosition);
+    }
+
+    public Category getStockCategory(Context context){
+        Category stockCategory = new Category();
+
+        stockCategory.setId(0);
+        stockCategory.setTitle(context.getString(R.string.DEFAULT_CATEGORY_TITLE));
+        stockCategory.setDescription("Categoría por defecto, asignada a los tickets que no tienen categoría.");
+        stockCategory.setImgFilename(Init.DEFAULT_IMG);
+
+        return stockCategory;
     }
 
 }
