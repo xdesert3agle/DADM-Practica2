@@ -17,6 +17,7 @@ public class Ticket {
     private String imgFilename;
     private double latitude;
     private double longitude;
+    private String OCRtext;
 
     public Ticket(){
         this.date = new Date();
@@ -114,5 +115,13 @@ public class Ticket {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getOCRtext() {
+        return OCRtext;
+    }
+
+    public void setOCRtext(String OCRtext) {
+        this.OCRtext = OCRtext;
     }
 }

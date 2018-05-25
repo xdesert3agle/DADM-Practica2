@@ -7,13 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -95,7 +93,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     private List<String> mCategoryNamesList = new ArrayList<>();
     private OkHttpClient mHTTPClient = new OkHttpClient();
     private String mImgName;
-    private Ticket mNewTicket;
+    private Ticket mNewTicket = new Ticket();
     private Ticket mSelTicket;
     private GoogleMap mMap;
     private Location mLocation;
@@ -213,8 +211,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
                 // Se pone la imagen en el formulario
                 ivTicketImg.setImageBitmap(bmTicketImg);
-
-                Log.d("OCR", getOCRFromImage(bmTicketImg));
+                mNewTicket.setOCRtext(getOCRFromBitmap(bmTicketImg));
             }
         });
     }
@@ -336,7 +333,6 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     }
 
     public void fetchNewTicketInfo(){
-        mNewTicket = new Ticket();
 
         // Se recoge la información del formulario
         mNewTicket.setTitle(etTitle.getText().toString());
@@ -465,7 +461,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    public String getOCRFromImage(Bitmap bitmap){
+    public String getOCRFromBitmap(Bitmap bitmap){
         Frame frame = new Frame.Builder().setBitmap(bitmap).build();
 
         SparseArray<TextBlock> textBlocks = mTextRecognizer.detect(frame);

@@ -77,6 +77,15 @@
                     app:met_floatingLabelText="@string/LBL_CATEGORY_DESC"
                     app:met_floatingLabelAlwaysShown="true" />
 
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/etDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="@string/LBL_CATEGORY_DETAILS"
+                    app:met_floatingLabelAlwaysShown="true" />
+
                 <Button
                     android:id="@+id/btnCreateEditCategory"
                     android:layout_width="match_parent"

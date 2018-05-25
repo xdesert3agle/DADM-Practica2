@@ -126,6 +126,7 @@ public class CategoryUtil {
         stockCategory.setId(0);
         stockCategory.setTitle(context.getString(R.string.DEFAULT_CATEGORY_TITLE));
         stockCategory.setDescription("Categoría por defecto, asignada a los tickets que no tienen categoría.");
+        stockCategory.setDetails("Puedes editar esta categoría si así lo deseas.");
         stockCategory.setImgFilename(Init.DEFAULT_IMG);
 
         return stockCategory;

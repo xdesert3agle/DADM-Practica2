@@ -77,6 +77,18 @@
                     app:met_floatingLabelText="@string/LBL_TICKET_DESC"
                     app:met_floatingLabelAlwaysShown="true" />
 
+                <Button
+                    android:id="@+id/btnCreateEditTicket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/BTN_APPLY_OCR"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:textSize="15sp"
+                    android:layout_gravity="center"
+                    style="@style/Widget.AppCompat.Button.Colored"/>
+
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/etPrice"
                     android:layout_width="match_parent"
@@ -98,8 +110,7 @@
                     android:id="@+id/spCategories"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
-                    android:entries="@array/size_entries" />
+                    android:layout_marginTop="8dp" />
 
                 <LinearLayout
                     android:id="@+id/llLocationContainer"

@@ -43,6 +43,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.fabPhotoFromCamera) FloatingActionButton fabPhotoFromCamera;
     @BindView(R.id.etTitle) EditText etTitle;
     @BindView(R.id.etDescription) EditText etDescription;
+    @BindView(R.id.etDetails) EditText etDetails;
     @BindView(R.id.btnCreateEditCategory) Button btnCreateEditCategory;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
@@ -70,8 +71,6 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         fabPhotoFromGallery.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_image, Color.WHITE, 26, AddEditCategory.this));
         fabPhotoFromCamera.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_camera, Color.WHITE, 26, AddEditCategory.this));
 
-
-
         if (isEditMode()){ // Si el usuario ha entrado a editar una categoría...
             mSelCategoryPosition = getIntent().getExtras().getInt(Categories.TAG_CATEGORY_POSITION);
 
@@ -80,6 +79,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
             ivCategoryImg.setImageBitmap(ImgUtil.getImageAsBitmap(mSelCategory.getImgFilename(), this));
             etTitle.setText(mSelCategory.getTitle());
             etDescription.setText(mSelCategory.getDescription());
+            etDetails.setText(mSelCategory.getDetails());
             btnCreateEditCategory.setText(R.string.BTN_EDIT_CATEGORY);
 
             mToolbar.setTitle(R.string.TITLE_EDIT_CATEGORY);
@@ -216,6 +216,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         mNewCategory.setId(mCategoryUtil.getNewID());
         mNewCategory.setTitle(etTitle.getText().toString());
         mNewCategory.setDescription(etDescription.getText().toString());
+        mNewCategory.setDetails(etDescription.getText().toString());
         mNewCategory.setImgFilename(mImgName);
     }
 
@@ -229,6 +230,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         // Se recoge la información del formulario, haya cambiado o no
         mSelCategory.setTitle(etTitle.getText().toString());
         mSelCategory.setDescription(etDescription.getText().toString());
+        mSelCategory.setDetails(etDetails.getText().toString());
 
         if (mImgName != null){ // La imagen solo se setea si ha cambiado
             ImgUtil.deleteImage(mSelCategory.getImgFilename(), this);
@@ -239,7 +241,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
     }
 
     public boolean emptyFieldsLeft(){
-        return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || mImgName == null;
+        return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || etDetails.getText().toString().isEmpty() || mImgName == null;
     }
 
     public boolean isEditMode(){

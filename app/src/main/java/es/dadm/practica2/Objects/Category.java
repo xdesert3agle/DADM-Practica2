@@ -8,6 +8,7 @@ public class Category {
     private int id;
     private String title;
     private String description;
+    private String details;
     private String imgFilename;
 
     public Category(){}
@@ -34,6 +35,14 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public String getImgFilename() {

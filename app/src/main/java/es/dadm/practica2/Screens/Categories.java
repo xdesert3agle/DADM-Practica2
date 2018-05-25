@@ -131,8 +131,13 @@ public class Categories extends AppCompatActivity {
                 builder.setMessage(R.string.MSG_CATEGORY_DELETE_CONFIRM)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                deleteSelectedCategory();
-                                refreshCategotyList();
+                                if (mCategoryList.size() > 1) {
+                                    deleteSelectedCategory();
+                                    refreshCategotyList();
+                                } else {
+                                    Toast.makeText(Categories.this, R.string.MSG_LAST_CATEGORY_DELETE_ERROR, Toast.LENGTH_SHORT).show();
+                                }
+
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
