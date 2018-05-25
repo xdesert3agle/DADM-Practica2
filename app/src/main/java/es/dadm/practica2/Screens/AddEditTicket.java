@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -49,15 +48,15 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.dadm.practica2.Objects.Category;
-import es.dadm.practica2.Objects.CategoryUtil;
-import es.dadm.practica2.Util.ImgUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dadm.practica2.Util.DecimalDigitsInputFilter;
-import es.dadm.practica2.R;
+import es.dadm.practica2.Objects.Category;
+import es.dadm.practica2.Objects.CategoryUtil;
 import es.dadm.practica2.Objects.Ticket;
 import es.dadm.practica2.Objects.TicketDB;
+import es.dadm.practica2.R;
+import es.dadm.practica2.Util.DecimalDigitsInputFilter;
+import es.dadm.practica2.Util.ImgUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -65,7 +64,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
-import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class AddEditTicket extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
@@ -89,8 +87,6 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     public static final int GALLERY_REQUEST = 2;
     public static final int LOCATION_REQUEST = 3;
 
-    private static List<String> locationPerms = new ArrayList<>();
-
     private TextRecognizer mTextRecognizer;
     private TicketDB mTicketDB = TicketDB.getInstance();
     private CategoryUtil mCategoryUtil = CategoryUtil.getInstance();
@@ -105,6 +101,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     private GoogleMap mMap;
     private Location mLocation;
     private Bundle mMapBundle = null;
+    private boolean permaDenied = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,10 +263,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             llLocationContainer.setVisibility(View.VISIBLE);
             mapTicketLocation.onResume();
         } else {
-            locationPerms.add(0, Manifest.permission.ACCESS_COARSE_LOCATION);
-            locationPerms.add(1, Manifest.permission.ACCESS_FINE_LOCATION);
-
-            if (!EasyPermissions.somePermissionPermanentlyDenied(this, locationPerms)) {
+            if (!permaDenied) {
                 requestLocation();
             }
         }
@@ -277,8 +271,6 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
     private void requestLocation() {
         String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        Log.d("Requesteando", "Requesteando");
 
         if (EasyPermissions.hasPermissions(this, perms)) {
             llLocationContainer.setVisibility(View.VISIBLE);
@@ -376,7 +368,9 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            permaDenied = true;
+        }
     }
 
     public void fetchNewTicketInfo(){
@@ -482,8 +476,11 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     }
 
     public void printFormattedAddress() {
+        String parsedLatitude = String.valueOf(mLocation.getLatitude()).replace(",", ".");
+        String parsedLongitude = String.valueOf(mLocation.getLongitude()).replace(",", ".");
+
         Request request = new Request.Builder()
-                .url(String.format(getResources().getString(R.string.GEOCODING_HTTP_REQUEST_URL), mLocation.getLatitude(), mLocation.getLongitude(), getResources().getString(R.string.GEOCODING_API_KEY)))
+                .url(String.format(getResources().getString(R.string.GEOCODING_HTTP_REQUEST_URL), parsedLatitude, parsedLongitude, getResources().getString(R.string.GEOCODING_API_KEY)))
                 .build();
 
         mHTTPClient.newCall(request).enqueue(new Callback() {
@@ -498,6 +495,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
                 mFormattedAddress = jsonGeolocation.get("results").getAsJsonArray().get(2).getAsJsonObject().get("formatted_address").getAsString();
                 mNewTicket.setAddress(mFormattedAddress);
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

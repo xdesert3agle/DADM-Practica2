@@ -32,7 +32,7 @@
     <string name="LBL_TICKET_TITLE">Título</string>
     <string name="BTN_NEW_TICKET">Crear ticket</string>
     <string name="BTN_EDIT_TICKET">Editar ticket</string>
-    <string name="BTN_APPLY_OCR">Rellenar descripción (OCR)</string>
+    <string name="BTN_APPLY_OCR">Auto-rellenar descripción</string>
     <string name="FAB_ADD_EDIT_TICKET_GALLERY">Galería</string>
     <string name="FAB_ADD_EDIT_TICKET_CAMERA">Cámara</string>
     <string name="LPRESS_DELETE_OPT">Eliminar</string>
@@ -70,8 +70,9 @@
 
     <string name="GMAPS_API_KEY">AIzaSyACB4HcrcWeWaVdMDZRKd9RtJnqgwU34x8</string>
     <string name="GEOCODING_API_KEY">AIzaSyAllfK-ZekF8XFsiXC1L4tafHwWIrr_H-A</string>
-    <string name="GEOCODING_HTTP_REQUEST_URL">https://maps.googleapis.com/maps/api/geocode/json?latlng=%1$.6f,%2$.6f&amp;key=%3$s</string>
+    <string name="GEOCODING_HTTP_REQUEST_URL">https://maps.googleapis.com/maps/api/geocode/json?latlng=%1$s,%2$s&amp;key=%3$s</string>
     <string name="DEFAULT_CATEGORY_TITLE">Sin categoría</string>
+    <string name="MSG_LOCATION_ERROR">No se ha podido obtener la dirección.</string>
 </resources>
 
 
