@@ -18,6 +18,7 @@ public class Ticket {
     private double latitude;
     private double longitude;
     private String OCRtext;
+    private String address;
 
     public Ticket(){
         this.date = new Date();
@@ -123,5 +124,13 @@ public class Ticket {
 
     public void setOCRtext(String OCRtext) {
         this.OCRtext = OCRtext;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

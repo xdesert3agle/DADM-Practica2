@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,12 +41,13 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
     private GoogleMap mMap;
+    private static List<String> locationPerms = new ArrayList<>();
     private Bundle mMapBundle = null;
     private Location mLocation;
     private TicketDB mTicketDB = TicketDB.getInstance();
     private List<Ticket> mTicketList = new ArrayList<>();
+    private DisplayMetrics mMetrics = new DisplayMetrics();
     private LoadToast lt;
-    DisplayMetrics mMetrics = new DisplayMetrics();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,20 +56,23 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
 
         ButterKnife.bind(this);
 
-        mTicketList = mTicketDB.getTicketsFromBD();
         getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
+
+         lt = new LoadToast(TicketLocations.this)
+                .setText("Buscando tu localización...")
+                .setTranslationY(mMetrics.heightPixels * 5/8)
+                .setProgressColor(Color.RED)
+                .show();
+
+
+        mTicketList = mTicketDB.getTicketsFromBD();
+
 
         setSupportActionBar(mToolbar);
         setToolbarLocationCount();
 
         if (hasLocationPermision()){
             initMap();
-
-            lt = new LoadToast(TicketLocations.this)
-                    .setText("Buscando tu localización...")
-                    .setTranslationY(mMetrics.heightPixels * 5/8)
-                    .setProgressColor(Color.RED)
-                    .show();
         }
 
         if (savedInstanceState != null) {
@@ -84,7 +90,12 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
         if (hasLocationPermision()) {
             mapTicketLocation.onResume();
         } else {
-            requestLocation();
+            locationPerms.add(0, Manifest.permission.ACCESS_COARSE_LOCATION);
+            locationPerms.add(1, Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (!EasyPermissions.somePermissionPermanentlyDenied(this, locationPerms)) {
+                requestLocation();
+            }
         }
     }
 
@@ -138,8 +149,6 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
-        lt.success();
-
         if (hasLocationPermision()){
             mMap.setMyLocationEnabled(true);
 
@@ -158,6 +167,8 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
                             .build();
 
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(myPosition));
+
+                    lt.success();
                 }
             });
 

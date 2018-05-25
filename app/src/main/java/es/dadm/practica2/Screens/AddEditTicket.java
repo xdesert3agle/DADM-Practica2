@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -88,6 +89,8 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     public static final int GALLERY_REQUEST = 2;
     public static final int LOCATION_REQUEST = 3;
 
+    private static List<String> locationPerms = new ArrayList<>();
+
     private TextRecognizer mTextRecognizer;
     private TicketDB mTicketDB = TicketDB.getInstance();
     private CategoryUtil mCategoryUtil = CategoryUtil.getInstance();
@@ -98,6 +101,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     private String mImgName;
     private Ticket mNewTicket = new Ticket();
     private Ticket mSelTicket;
+    private String mFormattedAddress;
     private GoogleMap mMap;
     private Location mLocation;
     private Bundle mMapBundle = null;
@@ -142,14 +146,16 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
             mSelTicket = mTicketDB.getTicketWithID(targetTicketID);
 
+            mSelTicket.printInfo();
+
             ivTicketImg.setImageBitmap(ImgUtil.getImageAsBitmap(mSelTicket.getImgFilename(), this));
             etTitle.setText(mSelTicket.getTitle());
             etDescription.setText(mSelTicket.getDescription());
             etPrice.setText(String.valueOf(new DecimalFormat("#.00").format(mSelTicket.getPrice())));
             btnCreateEditTicket.setText(R.string.BTN_EDIT_TICKET);
 
-            if (mSelTicket.getLatitude() != 0 && mSelTicket.getLongitude() != 0){
-                printFormattedAddress();
+            if (mSelTicket.getAddress() != null){
+                tvFormattedAddress.setText(mSelTicket.getAddress());
             }
 
             mToolbar.setTitle(R.string.TITLE_EDIT_TICKET);
@@ -260,12 +266,19 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             llLocationContainer.setVisibility(View.VISIBLE);
             mapTicketLocation.onResume();
         } else {
-            requestLocation();
+            locationPerms.add(0, Manifest.permission.ACCESS_COARSE_LOCATION);
+            locationPerms.add(1, Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (!EasyPermissions.somePermissionPermanentlyDenied(this, locationPerms)) {
+                requestLocation();
+            }
         }
     }
 
     private void requestLocation() {
         String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        Log.d("Requesteando", "Requesteando");
 
         if (EasyPermissions.hasPermissions(this, perms)) {
             llLocationContainer.setVisibility(View.VISIBLE);
@@ -363,9 +376,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
-        }
+
     }
 
     public void fetchNewTicketInfo(){
@@ -421,8 +432,6 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             if (!isEditMode()){
                 mMap.setMyLocationEnabled(true);
 
-                //mMap.moveCamera(CameraUpdateFactory.newLatLng(mLocation.get));
-
                 mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
                     @Override
                     public void onMyLocationChange(Location location) {
@@ -435,6 +444,8 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
                                 .target(myLatLng).zoom(17).bearing(90).tilt(30).build();
                         mMap.moveCamera(
                                 CameraUpdateFactory.newCameraPosition(myPosition));
+
+                        printFormattedAddress();
                     }
                 });
 
@@ -472,7 +483,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
     public void printFormattedAddress() {
         Request request = new Request.Builder()
-                .url(String.format(getResources().getString(R.string.GEOCODING_HTTP_REQUEST_URL), mSelTicket.getLatitude(), mSelTicket.getLongitude(), getResources().getString(R.string.GEOCODING_API_KEY)))
+                .url(String.format(getResources().getString(R.string.GEOCODING_HTTP_REQUEST_URL), mLocation.getLatitude(), mLocation.getLongitude(), getResources().getString(R.string.GEOCODING_API_KEY)))
                 .build();
 
         mHTTPClient.newCall(request).enqueue(new Callback() {
@@ -485,12 +496,12 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             public void onResponse(Call call, Response response) throws IOException {
                 JsonObject jsonGeolocation = new JsonParser().parse(response.body().string()).getAsJsonObject();
 
-                final String formattedAddress = jsonGeolocation.get("results").getAsJsonArray().get(2).getAsJsonObject().get("formatted_address").getAsString();
-
-                AddEditTicket.this.runOnUiThread(new Runnable() {
+                mFormattedAddress = jsonGeolocation.get("results").getAsJsonArray().get(2).getAsJsonObject().get("formatted_address").getAsString();
+                mNewTicket.setAddress(mFormattedAddress);
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        tvFormattedAddress.setText(formattedAddress);
+                        tvFormattedAddress.setText(mFormattedAddress);
                     }
                 });
             }

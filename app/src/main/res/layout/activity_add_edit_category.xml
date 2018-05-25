@@ -22,11 +22,12 @@
 
             <ImageView
                 android:id="@+id/ivImg"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="50dp"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:src="@drawable/card_placeholder"
+                android:src="@drawable/img_pick_placeholder"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"/>
 

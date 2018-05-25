@@ -34,7 +34,7 @@ public class TicketTabContainer extends DrawerMenuActivity {
     private fragmentTiles mFragmentTiles;
     private fragmentCards mFragmentCards;
 
-    TicketDB mTicketDB;
+    private TicketDB mTicketDB;
     private List<Ticket> mTicketList = new ArrayList<>();
 
     @Override

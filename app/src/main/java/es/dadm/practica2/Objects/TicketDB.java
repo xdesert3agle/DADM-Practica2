@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,8 +27,9 @@ public class TicketDB extends SQLiteOpenHelper {
     private static final String COL_PHOTO = "PHOTO";
     private static final String COL_LATITUDE = "LATITUDE";
     private static final String COL_LONGITUDE = "LONGITUDE";
+    private static final String COL_ADDRESS = "ADDRESS";
     private static final String COL_OCR = "OCR_TEXT";
-    private static final String[] COLUMNS = { COL_ID, COL_CATEGORY_ID, COL_TITLE, COL_DESCRIPTION, COL_PRICE, COL_DATE, COL_PHOTO, COL_LATITUDE, COL_LONGITUDE, COL_OCR} ;
+    private static final String[] COLUMNS = { COL_ID, COL_CATEGORY_ID, COL_TITLE, COL_DESCRIPTION, COL_PRICE, COL_DATE, COL_PHOTO, COL_LATITUDE, COL_LONGITUDE, COL_ADDRESS, COL_OCR} ;
 
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -43,6 +45,7 @@ public class TicketDB extends SQLiteOpenHelper {
             COL_PHOTO + " TEXT NOT NULL, " +
             COL_LATITUDE + " DOUBLE, " +
             COL_LONGITUDE + " DOUBLE, " +
+            COL_ADDRESS + " STRING, " +
             COL_OCR + " TEXT)";
 
     private TicketDB(Context context) {
@@ -125,7 +128,8 @@ public class TicketDB extends SQLiteOpenHelper {
         ticket.setImgFilename(cursor.getString(6));
         ticket.setLatitude(cursor.getDouble(7));
         ticket.setLongitude(cursor.getDouble(8));
-        ticket.setOCRtext(cursor.getString(9));
+        ticket.setAddress(cursor.getString(9));
+        ticket.setOCRtext(cursor.getString(10));
 
         return ticket;
     }
@@ -141,6 +145,7 @@ public class TicketDB extends SQLiteOpenHelper {
         newRecord.put(COL_PHOTO, ticket.getImgFilename());
         newRecord.put(COL_LATITUDE, ticket.getLatitude());
         newRecord.put(COL_LONGITUDE, ticket.getLongitude());
+        newRecord.put(COL_ADDRESS, ticket.getAddress());
         newRecord.put(COL_OCR, ticket.getOCRtext());
 
         return newRecord;
