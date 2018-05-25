@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -76,12 +77,13 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.etPrice) EditText etPrice;
     @BindView(R.id.spCategories) Spinner spCategories;
     @BindView(R.id.tvFormattedAddress) TextView tvFormattedAddress;
+    @BindView(R.id.btnGetOCR) Button btnGetOCR;
     @BindView(R.id.btnCreateEditTicket) Button btnCreateEditTicket;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.llLocationContainer) LinearLayout llLocationContainer;
     @BindView(R.id.mapTicketLocation) MapView mapTicketLocation;
 
-    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
+    public static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
     public static final int CAMERA_REQUEST = 1;
     public static final int GALLERY_REQUEST = 2;
     public static final int LOCATION_REQUEST = 3;
@@ -92,6 +94,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     private List<Category> mCategoryList = new ArrayList<>();
     private List<String> mCategoryNamesList = new ArrayList<>();
     private OkHttpClient mHTTPClient = new OkHttpClient();
+    private Bitmap mPickedImg;
     private String mImgName;
     private Ticket mNewTicket = new Ticket();
     private Ticket mSelTicket;
@@ -107,6 +110,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         ButterKnife.bind(this);
 
         btnCreateEditTicket.setOnClickListener(this);
+        btnGetOCR.setOnClickListener(this);
         fabPhotoFromGallery.setOnClickListener(this);
         fabPhotoFromCamera.setOnClickListener(this);
 
@@ -124,6 +128,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         ArrayAdapter<String> spCategoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCategoryNamesList);
         spCategories.setAdapter(spCategoryAdapter);
 
+        btnGetOCR.setCompoundDrawables(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_search, Color.WHITE, 16, this), null, null, null);
         etPrice.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(2)});
 
         mTextRecognizer = new TextRecognizer.Builder(this).build();
@@ -153,6 +158,14 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
 
         setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -184,6 +197,28 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
                 openCamera();
 
                 break;
+
+            case R.id.btnGetOCR:
+                DisplayMetrics metrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+                if (mPickedImg != null) {
+                    String OCR = getOCRFromBitmap(mPickedImg);
+
+                    if (!OCR.isEmpty()) {
+                        etDescription.setText(OCR);
+                        mNewTicket.setOCRtext(OCR);
+
+                        Toast.makeText(this, R.string.MSG_OCR_TEXT_FOUND, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, R.string.MSG_OCR_NO_TEXT_FOUND, Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(this, R.string.MSG_OCR_NO_IMG_SELECTED, Toast.LENGTH_SHORT).show();
+                }
+
+                break;
         }
 
         fabActionMenu.collapse();
@@ -204,14 +239,13 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
                 File ticketImgFile = imagesFiles.get(0);
                 mImgName = ticketImgFile.getName();
 
-                Bitmap bmTicketImg = BitmapFactory.decodeFile(ticketImgFile.getAbsolutePath());
+                mPickedImg = BitmapFactory.decodeFile(ticketImgFile.getAbsolutePath());
 
                 // Se guarda la imagen en la memoria externa del teléfono
-                ImgUtil.saveImage(bmTicketImg, mImgName, AddEditTicket.this);
+                ImgUtil.saveImage(mPickedImg, mImgName, AddEditTicket.this);
 
                 // Se pone la imagen en el formulario
-                ivTicketImg.setImageBitmap(bmTicketImg);
-                mNewTicket.setOCRtext(getOCRFromBitmap(bmTicketImg));
+                ivTicketImg.setImageBitmap(mPickedImg);
             }
         });
     }
@@ -314,9 +348,11 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             case CAMERA_REQUEST:
                 EasyImage.openCamera(AddEditTicket.this, 0);
                 break;
+
             case GALLERY_REQUEST:
                 EasyImage.openGallery(AddEditTicket.this, 0);
                 break;
+
             case LOCATION_REQUEST:
                 llLocationContainer.setVisibility(View.VISIBLE);
                 initMap();

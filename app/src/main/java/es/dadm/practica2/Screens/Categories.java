@@ -2,9 +2,7 @@ package es.dadm.practica2.Screens;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,15 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +26,13 @@ import es.dadm.practica2.Interfaces.ElementActions;
 import es.dadm.practica2.Objects.Category;
 import es.dadm.practica2.Objects.CategoryUtil;
 import es.dadm.practica2.R;
+import es.dadm.practica2.Util.DrawerMenuActivity;
 import es.dadm.practica2.Util.ImgUtil;
 
-public class Categories extends AppCompatActivity {
+public class Categories extends DrawerMenuActivity {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
-    private Drawer mDrawer;
     private CategoryAdapter mAdapter;
     private CategoryUtil mCategoryUtil = CategoryUtil.getInstance();
     private List<Category> mCategoryList = new ArrayList<>();
@@ -64,8 +54,6 @@ public class Categories extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         setToolbarCategoryCount();
 
-        setUpDrawer();
-
         // Si no hay ninguna categoría en el array se muestra un Toast indicándolo
         if (mCategoryList.size() == 0) Toast.makeText(this, R.string.MSG_START_NO_CATEGORIES_FOUND, Toast.LENGTH_SHORT).show();
 
@@ -86,6 +74,9 @@ public class Categories extends AppCompatActivity {
 
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+
+        setUpDrawer(mToolbar);
+        drawer.setSelectionAtPosition(2);
     }
 
     @Override
@@ -167,64 +158,26 @@ public class Categories extends AppCompatActivity {
         setToolbarCategoryCount();
     }
 
-    public void setUpDrawer() {
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem()
-                .withIdentifier(0)
-                .withName(R.string.DRAWER_OPTION_TICKETS)
-                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24, Categories.this));
+    @Override
+    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        switch (position) {
+            case 1:
+                drawer.closeDrawer();
+                startActivity(new Intent(Categories.this, TicketTabContainer.class));
+                break;
 
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem()
-                .withIdentifier(1)
-                .withName(R.string.DRAWER_OPTION_CATEGORIES)
-                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_folder, Color.DKGRAY, 24, Categories.this));
+            case 2:
+                drawer.closeDrawer();
+                break;
 
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.color.primary)
-                .addProfiles(
-                        new ProfileDrawerItem()
-                                .withName("Miguel Ángel Vicente Baeza")
-                                .withEmail("miguel.vicente@goumh.umh.es")
-                                .withIcon(R.mipmap.ic_launcher_round)
-                )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        return false;
-                    }
-                })
-                .build();
+            case 3:
+                startActivity(new Intent(Categories.this, TicketLocations.class));
+                drawer.closeDrawer();
+                break;
 
-        mDrawer = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(mToolbar)
-                .withAccountHeader(headerResult)
-                .addDrawerItems(
-                        item1,
-                        item2
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch (position) {
-                            case 1:
-                                startActivity(new Intent(Categories.this, TicketTabContainer.class));
-                                mDrawer.closeDrawer();
-                                break;
-
-                            case 2:
-                                mDrawer.closeDrawer();
-                                break;
-
-                            default:
-                                throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
-                        }
-                        return true;
-                    }
-                })
-                .withActionBarDrawerToggle(true)
-                .build();
-
-        mDrawer.setSelection(item2);
+            default:
+                throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
+        }
+        return true;
     }
 }

@@ -1,48 +1,33 @@
 package es.dadm.practica2.Screens;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import es.dadm.practica2.Util.ImgUtil;
+import es.dadm.practica2.Util.DrawerMenuActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dadm.practica2.Adapters.TabsAdapter;
 import es.dadm.practica2.R;
 import es.dadm.practica2.Objects.Ticket;
 import es.dadm.practica2.Objects.TicketDB;
-import pub.devrel.easypermissions.EasyPermissions;
 
 
-public class TicketTabContainer extends AppCompatActivity {
+public class TicketTabContainer extends DrawerMenuActivity {
     @BindView(R.id.vpContent) ViewPager mViewPager;
     @BindView(R.id.tlTabs) TabLayout mTabLayout;
     @BindView(R.id.toolbar) Toolbar mToolbar;
-
-    private Drawer mDrawer;
 
     private TabsAdapter mTabAdapter;
     private fragmentList mFragmentList;
@@ -74,7 +59,8 @@ public class TicketTabContainer extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         setToolbarTicketCount();
 
-        setUpDrawer();
+        setUpDrawer(mToolbar);
+        drawer.setSelectionAtPosition(1);
     }
 
     private void setUpViewPager(ViewPager viewPager) {
@@ -135,92 +121,27 @@ public class TicketTabContainer extends AppCompatActivity {
         mTicketList = mTicketDB.getTicketsFromBD();
     }
 
-    public int getTicketCount() {
-        return mTicketList.size();
-    }
+    @Override
+    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        switch (position) {
+            case 1:
+                drawer.closeDrawer();
+                break;
 
-    private boolean hasLocationPermision(){
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+            case 2:
+                drawer.closeDrawer();
+                startActivity(new Intent(TicketTabContainer.this, Categories.class));
+                break;
 
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            return true;
+            case 3:
+                startActivity(new Intent(TicketTabContainer.this, TicketLocations.class));
+                drawer.closeDrawer();
+                break;
+
+            default:
+                throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
         }
 
-        return false;
-    }
-
-    @SuppressLint("MissingPermission")
-    private void requestLocation() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        EasyPermissions.requestPermissions(this, getString(R.string.MSG_GALLERY_RAT), AddEditTicket.LOCATION_REQUEST, perms);
-    }
-
-    public void setUpDrawer() {
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem()
-                .withIdentifier(0)
-                .withName(R.string.DRAWER_OPTION_TICKETS)
-                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_file2, Color.DKGRAY, 24, TicketTabContainer.this));
-
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem()
-                .withIdentifier(1)
-                .withName(R.string.DRAWER_OPTION_CATEGORIES)
-                .withIcon(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_folder, Color.DKGRAY, 24, TicketTabContainer.this));
-
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.color.primary)
-                .addProfiles(
-                        new ProfileDrawerItem()
-                                .withName("Miguel Ángel Vicente Baeza")
-                                .withEmail("miguel.vicente@goumh.umh.es")
-                                .withIcon(R.mipmap.ic_launcher_round)
-                )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        return false;
-                    }
-                })
-                .build();
-
-        mDrawer = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(mToolbar)
-                .withAccountHeader(headerResult)
-                .addDrawerItems(
-                        item1,
-                        item2
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch (position) {
-                            case 1:
-                                mDrawer.closeDrawer();
-                                break;
-                            case 2:
-                                mDrawer.closeDrawer();
-                                startActivity(new Intent(TicketTabContainer.this, Categories.class));
-                                break;
-                            default:
-                                throw new IllegalArgumentException("No se ha podido reconocer el botón presionado.");
-                        }
-                        return true;
-                    }
-                })
-                .withActionBarDrawerToggle(true)
-                .build();
-    }
-
-    public void removeTab(int position) {
-        mTabLayout.removeTabAt(position);
-        mTabAdapter.removeTabPage(position);
-    }
-
-    private void addTab(String title) {
-        mTabLayout.addTab(mTabLayout.newTab().setText(title));
-
-        mTabAdapter.notifyDataSetChanged();
+        return true;
     }
 }
