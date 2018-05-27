@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.dadm.practica2.R;
-import es.dadm.practica2.Util.Init;
+import es.dadm.practica2.Util.ImgUtil;
 
 public class CategoryUtil {
     private static CategoryUtil instance = null;
@@ -27,7 +27,7 @@ public class CategoryUtil {
 
     private CategoryUtil(Context context) {
         mCategoryList = new ArrayList<>();
-        mCategoryList.add(getStockCategory(context));
+        mCategoryList.add(getDefaultCategory(context));
     }
 
     public static void init(Context context){
@@ -100,36 +100,28 @@ public class CategoryUtil {
         persistCategories(context);
     }
 
-    public int getCount(){
-        return mCategoryList.size();
-    }
-
+    // Genera una ID para una categoría nueva
     public int getNewID(){
-        int newID;
-
-        if (mCategoryList.size() == 0){
-            newID = 0;
-        } else {
-            newID = mCategoryList.get(mCategoryList.size() - 1).getId() + 1;
-        }
+        int newID = mCategoryList.size() > 0 ? mCategoryList.get(mCategoryList.size() - 1).getId() + 1 : 0;
 
         return newID;
     }
 
+    // Devuelve la categoría que se encuentra en una determinada posición del array de categorías
     public Category getCategory(int categoryPosition){
         return mCategoryList.get(categoryPosition);
     }
 
-    public Category getStockCategory(Context context){
+    // Crea y devuelve una categoría para ser usada como categoría por defecto
+    public Category getDefaultCategory(Context context){
         Category stockCategory = new Category();
 
         stockCategory.setId(0);
         stockCategory.setTitle(context.getString(R.string.DEFAULT_CATEGORY_TITLE));
-        stockCategory.setDescription("Categoría por defecto, asignada a los tickets que no tienen categoría.");
-        stockCategory.setDetails("Puedes editar esta categoría si así lo deseas.");
-        stockCategory.setImgFilename(Init.DEFAULT_IMG);
+        stockCategory.setDescription(context.getString(R.string.DEFAULT_CATEGORY_DESCRIPTION));
+        stockCategory.setDetails(context.getString(R.string.DEFAULT_CATEGORY_DETAILS));
+        stockCategory.setImgFilename(ImgUtil.DEFAULT_IMG_FILENAME);
 
         return stockCategory;
     }
-
 }

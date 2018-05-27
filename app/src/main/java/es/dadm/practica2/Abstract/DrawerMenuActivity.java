@@ -1,8 +1,6 @@
-package es.dadm.practica2.Util;
+package es.dadm.practica2.Abstract;
 
 import android.graphics.Color;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -17,6 +15,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import es.dadm.practica2.R;
+import es.dadm.practica2.Util.ImgUtil;
 
 public abstract class DrawerMenuActivity extends AppCompatActivity implements Drawer.OnDrawerItemClickListener {
     protected Drawer drawer;
@@ -39,19 +38,13 @@ public abstract class DrawerMenuActivity extends AppCompatActivity implements Dr
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.color.primary)
+                .withHeaderBackground(R.drawable.drawer_header_background)
                 .addProfiles(
                         new ProfileDrawerItem()
-                                .withName("Miguel Ángel Vicente Baeza")
-                                .withEmail("miguel.vicente@goumh.umh.es")
+                                .withName(R.string.DEV_NAME)
+                                .withEmail(R.string.DEV_MAIL)
                                 .withIcon(R.mipmap.ic_launcher_round)
                 )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        return false;
-                    }
-                })
                 .build();
 
         drawer = new DrawerBuilder()

@@ -1,7 +1,5 @@
 package es.dadm.practica2.Objects;
 
-import android.graphics.BitmapFactory;
-
 import es.dadm.practica2.Util.ImgUtil;
 
 public class Category {
@@ -11,7 +9,9 @@ public class Category {
     private String details;
     private String imgFilename;
 
-    public Category(){}
+    public Category(){
+        this.imgFilename = ImgUtil.DEFAULT_IMG_FILENAME;
+    }
 
     public int getId() {
         return id;

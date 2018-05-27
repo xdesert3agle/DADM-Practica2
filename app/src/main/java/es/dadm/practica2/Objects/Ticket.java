@@ -1,11 +1,9 @@
 package es.dadm.practica2.Objects;
 
-import android.util.Log;
-
 import java.util.Calendar;
 import java.util.Date;
 
-import es.dadm.practica2.Util.Init;
+import es.dadm.practica2.Util.ImgUtil;
 
 public class Ticket {
     private int id;
@@ -22,7 +20,7 @@ public class Ticket {
 
     public Ticket(){
         this.date = new Date();
-        this.imgFilename = Init.DEFAULT_IMG;
+        this.imgFilename = ImgUtil.DEFAULT_IMG_FILENAME;
     }
 
     public int getId() {
@@ -84,14 +82,6 @@ public class Ticket {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public void printInfo(){
-        Log.d("ID", String.valueOf(this.id));
-        Log.d("Importe", String.valueOf(this.price));
-        Log.d("Fecha de creación", getFormatedDate());
-        Log.d("Descripción corta", this.title);
-        Log.d("Descripción larga", this.description);
     }
 
     public String getImgFilename() {

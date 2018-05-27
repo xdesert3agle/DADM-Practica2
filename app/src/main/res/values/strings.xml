@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Practica2</string>
+    <string name="app_name">My Tickets</string>
 
     <!-- DRAWER MENU -->
     <string name="DRAWER_OPTION_TICKETS">Tickets</string>
@@ -22,6 +22,9 @@
 
     <!-- CATEGORY FIELDS -->
     <string name="CATEGORY_TITLE">Título de la categoría</string>
+    <string name="DEFAULT_CATEGORY_TITLE">Sin categoría</string>
+    <string name="DEFAULT_CATEGORY_DESCRIPTION">Categoría por defecto, asignada a los tickets que no tienen categoría.</string>
+    <string name="DEFAULT_CATEGORY_DETAILS">Puedes editar esta categoría si así lo deseas.</string>
 
     <!-- ADD & EDIT TICKET -->
     <string name="TITLE_ADD_TICKET">Nuevo ticket</string>
@@ -48,10 +51,10 @@
     <string name="FAB_ADD_EDIT_CATEGORY_GALLERY">Galería</string>
     <string name="FAB_ADD_EDIT_CATEGORY_CAMERA">Cámara</string>
 
-    <!--  -->
+    <!-- TICKET LOCATIONS -->
     <string name="TITLE_TICKET_LOCATIONS">%1$d localizaciones</string>
 
-    <!-- Messages -->
+    <!-- MESSAGES -->
     <string name="MSG_START_NO_TICKETS_FOUND">Tu lista de tickets está vacía.</string>
     <string name="MSG_START_NO_CATEGORIES_FOUND">Tu lista de categorías está vacía.</string>
     <string name="MSG_EMPTY_FIELDS">Rellena todos los campos para continuar.</string>
@@ -67,12 +70,18 @@
     <string name="MSG_OCR_NO_TEXT_FOUND">No se ha reconocido texto en la imagen seleccionada.</string>
     <string name="MSG_OCR_NO_IMG_SELECTED">Debes añadir una imagen al ticket para poder usar esta opción.</string>
     <string name="MSG_OCR_TEXT_FOUND">Se ha encontrado texto en la imagen.</string>
+    <string name="MSG_LOCATION_ERROR">No se ha podido obtener la dirección.</string>
 
+    <!-- API -->
     <string name="GMAPS_API_KEY">AIzaSyACB4HcrcWeWaVdMDZRKd9RtJnqgwU34x8</string>
     <string name="GEOCODING_API_KEY">AIzaSyAllfK-ZekF8XFsiXC1L4tafHwWIrr_H-A</string>
     <string name="GEOCODING_HTTP_REQUEST_URL">https://maps.googleapis.com/maps/api/geocode/json?latlng=%1$s,%2$s&amp;key=%3$s</string>
-    <string name="DEFAULT_CATEGORY_TITLE">Sin categoría</string>
-    <string name="MSG_LOCATION_ERROR">No se ha podido obtener la dirección.</string>
+    <string name="MSG_EMPTY_TITLE">Debes introducir un título</string>
+    <string name="MSG_EMPTY_DESC">Debes introducir una descripción</string>
+    <string name="MSG_EMPTY_PRICE">Debes introducir un precio</string>
+    <string name="DEV_NAME">Miguel Ángel Vicente Baeza</string>
+    <string name="DEV_MAIL">miguel.vicente@goumh.umh.es</string>
+    <string name="MSG_SEARCHING_LOC">Buscando tu localización...</string>
 </resources>
 
 

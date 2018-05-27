@@ -28,5 +28,5 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:text="@string/TICKET_TITLE"
-        android:textSize="22sp" />
+        android:textSize="@dimen/huge_textSize" />
 </FrameLayout>

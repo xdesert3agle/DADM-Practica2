@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,7 +30,7 @@ import butterknife.ButterKnife;
 import es.dadm.practica2.Objects.Ticket;
 import es.dadm.practica2.Objects.TicketDB;
 import es.dadm.practica2.R;
-import es.dadm.practica2.Util.DrawerMenuActivity;
+import es.dadm.practica2.Abstract.DrawerMenuActivity;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -59,14 +57,13 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
         getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
 
          lt = new LoadToast(TicketLocations.this)
-                .setText("Buscando tu localización...")
+                .setText(getString(R.string.MSG_SEARCHING_LOC))
                 .setTranslationY(mMetrics.heightPixels * 5/8)
                 .setProgressColor(Color.RED)
                 .show();
 
 
         mTicketList = mTicketDB.getTicketsFromBD();
-
 
         setSupportActionBar(mToolbar);
         setToolbarLocationCount();
@@ -189,6 +186,7 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
         return false;
     }
 
+    // Método heredado de la Activity abstracta que proporciona el menú de navegación de la toolbar
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
         switch (position) {
@@ -228,11 +226,13 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
         return EasyPermissions.hasPermissions(this, perms);
     }
 
+    // Inicializa el mapa
     private void initMap(){
         mapTicketLocation.onCreate(mMapBundle);
         mapTicketLocation.getMapAsync(this);
     }
 
+    // Marca en el mapa todos los tickets que tienen localización
     public void markAllTicketsLocationOnMap(){
         int size = mTicketList.size();
 
@@ -240,14 +240,16 @@ public class TicketLocations extends DrawerMenuActivity implements EasyPermissio
             LatLng latLng = new LatLng(mTicketList.get(i).getLatitude(), mTicketList.get(i).getLongitude());
             mMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .title(""));
+                    .title(mTicketList.get(i).getTitle()));
         }
     }
 
+    // Escribe en la toolbar el número de tickets con localización
     public void setToolbarLocationCount(){
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TICKET_LOCATIONS), getTicketsWithLocation()));
     }
 
+    // Cuenta el número de tickets que tienen localización
     public int getTicketsWithLocation(){
         int size = mTicketList.size();
         int n_tickets = 0;

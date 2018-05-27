@@ -26,7 +26,7 @@ import es.dadm.practica2.Interfaces.ElementActions;
 import es.dadm.practica2.Objects.Category;
 import es.dadm.practica2.Objects.CategoryUtil;
 import es.dadm.practica2.R;
-import es.dadm.practica2.Util.DrawerMenuActivity;
+import es.dadm.practica2.Abstract.DrawerMenuActivity;
 import es.dadm.practica2.Util.ImgUtil;
 
 public class Categories extends DrawerMenuActivity {

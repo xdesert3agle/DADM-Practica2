@@ -28,7 +28,7 @@ import es.dadm.practica2.R;
 import es.dadm.practica2.Objects.Ticket;
 import es.dadm.practica2.Objects.TicketDB;
 
-public class fragmentCards extends Fragment {
+public class FragmentCards extends Fragment {
     @BindView(R.id.rvTickets) RecyclerView mRecycler;
 
     private CardAdapter mAdapter;
@@ -48,13 +48,15 @@ public class fragmentCards extends Fragment {
         ButterKnife.bind(this, view);
         registerForContextMenu(mRecycler);
 
+        // Se recogen los tickets de la base de datos
         mTicketDB = TicketDB.getInstance();
         mTicketList = mTicketDB.getTicketsFromBD();
 
+        // Adapter para el RecyclerView
         mAdapter = new CardAdapter(mTicketList, getActivity(), new ElementActions() {
             @Override
             public void onItemClicked(int position) {
-                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(fragmentList.TAG_TICKET_POSITION, mTicketList.get(position).getId()));
+                startActivity(new Intent(getActivity(), AddEditTicket.class).putExtra(FragmentList.TAG_TICKET_POSITION, mTicketList.get(position).getId()));
             }
 
             @Override
@@ -66,6 +68,7 @@ public class fragmentCards extends Fragment {
             }
         });
 
+        // Se asigna el adapter al Recycler para printear los tickets
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -82,7 +85,7 @@ public class fragmentCards extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         if (getUserVisibleHint()) {
             switch (item.getItemId()){
-                case R.id.lpDeleteElement:
+                case R.id.lpDeleteElement: // Opción eliminar ticket
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage(R.string.MSG_TICKET_DELETE_CONFIRM)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -120,11 +123,11 @@ public class fragmentCards extends Fragment {
         // Se recupera el ticket sobre el que el usuario ha hecho la pulsación larga
         Ticket selectedTicket = mTicketList.get(mSelTicketPosition);
 
-        ImgUtil.deleteImage(selectedTicket.getImgFilename(), getActivity()); // Se borra tanto la imagen de la factura de la memoria externa del teléfono...
+        ImgUtil.deleteImage(selectedTicket.getImgFilename(), getActivity()); // Se borra tanto la imagen del ticket de la memoria externa del teléfono...
         mTicketDB.deleteTicket(selectedTicket); // ...como el ticket de la base de datos
 
         Toast.makeText(getActivity(), String.format(getString(R.string.MSG_DELETED_TICKET), selectedTicket.getTitle()), Toast.LENGTH_SHORT).show();
-        setToolbarTicketCount();
+        setToolbarTicketCount(); // Se refresca el contador de tickets de la toolbar
     }
 
     private void setToolbarTicketCount(){

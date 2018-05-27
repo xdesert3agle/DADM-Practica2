@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.r0adkll.slidr.Slidr;
 
 import java.io.File;
 import java.util.List;
@@ -62,7 +63,9 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_add_edit_category);
 
         ButterKnife.bind(this);
+        Slidr.attach(this);
 
+        // OnClickListeners de los botones
         btnCreateEditCategory.setOnClickListener(this);
         fabPhotoFromGallery.setOnClickListener(this);
         fabPhotoFromCamera.setOnClickListener(this);
@@ -89,6 +92,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
 
         setSupportActionBar(mToolbar);
 
+        // Botón de atrás
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,8 +100,6 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
                 finish();
             }
         });
-
-
     }
 
     @Override
@@ -105,15 +107,14 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
 
         switch (view.getId()) {
             case R.id.btnCreateEditCategory:
-                if (!isEditMode()) {
-                    if (!emptyFieldsLeft()){
+                if (!isEditMode()) { // Si el usuario entró a editar una cateogría
+                    if (!emptyFieldsLeft()){ // Checkeo de campos en blanco
                         insertNewCategory();
                     } else {
                         Toast.makeText(this, R.string.MSG_EMPTY_FIELDS, Toast.LENGTH_SHORT).show();
                         break;
                     }
-
-                } else {
+                } else { // Si entró a añadir una categoría nueva
                     updateSelectedCategory();
                 }
 
@@ -137,12 +138,13 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
-            @Override
+            @Override // Error al coger la imagen
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+
                 Toast.makeText(AddEditCategory.this, R.string.MSG_IMG_PICK_ERROR, Toast.LENGTH_SHORT).show();
             }
 
-            @Override
+            @Override // Imagen cogida correctamente
             public void onImagesPicked(List<File> imagesFiles, EasyImage.ImageSource source, int type) {
 
                 // Se guarda la imagen en un 'File' y se convierte a 'Bitmap' para ponersela al formulario
@@ -154,12 +156,13 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
                 // Se guarda la imagen en la memoria externa del teléfono
                 ImgUtil.saveImage(bmCategoryImg, mImgName, AddEditCategory.this);
 
-                // Se pone la imagen en el formulario
+                // Se pone la imagen en el header del formulario
                 ivCategoryImg.setImageBitmap(bmCategoryImg);
             }
         });
     }
 
+    // Abrir la cámara. Respetando permisos
     private void openCamera() {
         String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -171,6 +174,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    // Abrir la galería. Respeta permisos
     private void openGallery() {
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -186,10 +190,11 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        // Se le pasan los request a la librería 'EasyPermissions' para que los gestione ella
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission") // EasyPermissions gestiona los permisos, pero Android sigue creyendo que no se han respetado
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         switch (requestCode) {
@@ -204,6 +209,7 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        // Si algun permiso ha sido denegado permanentemente...
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             new AppSettingsDialog.Builder(this).build().show();
         }
@@ -240,10 +246,12 @@ public class AddEditCategory extends AppCompatActivity implements View.OnClickLi
         mCategoryUtil.updateCategory(mSelCategoryPosition, mSelCategory, this);
     }
 
+    // Comprueba que no hayan campos vacíos en el formulario, ya que en la base de datos todos los campos son NOT NULL
     public boolean emptyFieldsLeft(){
-        return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || etDetails.getText().toString().isEmpty() || mImgName == null;
+        return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || etDetails.getText().toString().isEmpty();
     }
 
+    // Devuelve si el usuario entró a editar o a añadir una categoría nueva
     public boolean isEditMode(){
         return getIntent().getExtras() != null;
     }

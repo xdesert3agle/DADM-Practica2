@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,11 +29,6 @@ public class TicketDB extends SQLiteOpenHelper {
     private static final String COL_ADDRESS = "ADDRESS";
     private static final String COL_OCR = "OCR_TEXT";
     private static final String[] COLUMNS = { COL_ID, COL_CATEGORY_ID, COL_TITLE, COL_DESCRIPTION, COL_PRICE, COL_DATE, COL_PHOTO, COL_LATITUDE, COL_LONGITUDE, COL_ADDRESS, COL_OCR} ;
-
-    private SQLiteDatabase db;
-    private Cursor cursor;
-
-    //Sentencia SQL para crear la tabla de Tickets
     private static final String CREATE_DB = "CREATE TABLE " + TABLE_NAME +
             "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COL_CATEGORY_ID + " INTEGER NOT NULL, " +
@@ -45,8 +39,13 @@ public class TicketDB extends SQLiteOpenHelper {
             COL_PHOTO + " TEXT NOT NULL, " +
             COL_LATITUDE + " DOUBLE, " +
             COL_LONGITUDE + " DOUBLE, " +
-            COL_ADDRESS + " STRING, " +
+            COL_ADDRESS + " TEXT, " +
             COL_OCR + " TEXT)";
+
+    private static final String DROP_TABLE = "DROP TABLE IF EXISTS ";
+
+    private SQLiteDatabase db;
+    private Cursor cursor;
 
     private TicketDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -70,7 +69,7 @@ public class TicketDB extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int lastVersion, int newVersion) {
         // Se elimina la versión anterior de la tabla
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL(DROP_TABLE + TABLE_NAME);
 
         // Se crea la nueva versión de la tabla
         db.execSQL(CREATE_DB);
@@ -95,6 +94,7 @@ public class TicketDB extends SQLiteOpenHelper {
         return ticketList;
     }
 
+    // INSERT
     public void insertTicket(Ticket ticket) {
         ContentValues newRecord = getRecordValues(ticket);
 
@@ -102,6 +102,7 @@ public class TicketDB extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, newRecord);
     }
 
+    // UPDATE
     public void updateTicket(Ticket ticket) {
         ContentValues record = getRecordValues(ticket);
 
@@ -109,6 +110,7 @@ public class TicketDB extends SQLiteOpenHelper {
         db.update(TABLE_NAME, record, COL_ID + " = " + ticket.getId(), null);
     }
 
+    // DELETE
     public void deleteTicket(Ticket ticket) {
         ContentValues record = getRecordValues(ticket);
 
@@ -151,6 +153,7 @@ public class TicketDB extends SQLiteOpenHelper {
         return newRecord;
     }
 
+    // Devuelve un ticket con una ID determinada
     public Ticket getTicketWithID(int targetID){
         Ticket ticket = new Ticket();
 
@@ -163,6 +166,7 @@ public class TicketDB extends SQLiteOpenHelper {
         return ticket;
     }
 
+    // Devuelve la cantidad de tickets que hay en la BD
     public int getTicketCount(){
         db = getWritableDatabase();
         return Math.toIntExact(DatabaseUtils.queryNumEntries(db, TABLE_NAME));

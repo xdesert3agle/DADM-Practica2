@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -38,9 +39,13 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.r0adkll.slidr.Slidr;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,12 +114,14 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_add_edit_ticket);
 
         ButterKnife.bind(this);
+        Slidr.attach(this);
 
         btnCreateEditTicket.setOnClickListener(this);
         btnGetOCR.setOnClickListener(this);
         fabPhotoFromGallery.setOnClickListener(this);
         fabPhotoFromCamera.setOnClickListener(this);
 
+        // Si se tienen permisos de localización se inicializa el mapa
         if (hasLocationPermision()){
             initMap();
         }
@@ -123,9 +130,11 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
             mMapBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
 
+        // Se recoge el array de categorías del fichero .json
         mCategoryList = mCategoryUtil.getCategories(this);
-        fillCategoryNamesArray();
 
+        // Se obtiene un array con los nombres de las categorías para asignarlo al Spinner
+        fillCategoryNamesArray();
         ArrayAdapter<String> spCategoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCategoryNamesList);
         spCategories.setAdapter(spCategoryAdapter);
 
@@ -139,17 +148,16 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         fabPhotoFromCamera.setIconDrawable(ImgUtil.getFontAwesomeIcon(FontAwesome.Icon.faw_camera, Color.WHITE, 26, AddEditTicket.this));
 
         if (isEditMode()){ // Si el usuario ha entrado a editar un ticket...
-            int targetTicketID = getIntent().getExtras().getInt(fragmentList.TAG_TICKET_POSITION);
+            int targetTicketID = getIntent().getExtras().getInt(FragmentList.TAG_TICKET_POSITION);
 
             mSelTicket = mTicketDB.getTicketWithID(targetTicketID);
-
-            mSelTicket.printInfo();
 
             ivTicketImg.setImageBitmap(ImgUtil.getImageAsBitmap(mSelTicket.getImgFilename(), this));
             etTitle.setText(mSelTicket.getTitle());
             etDescription.setText(mSelTicket.getDescription());
             etPrice.setText(String.valueOf(new DecimalFormat("#.00").format(mSelTicket.getPrice())));
             btnCreateEditTicket.setText(R.string.BTN_EDIT_TICKET);
+            mPickedImg = ImgUtil.getImageAsBitmap(mSelTicket.getImgFilename(), this);
 
             if (mSelTicket.getAddress() != null){
                 tvFormattedAddress.setText(mSelTicket.getAddress());
@@ -176,19 +184,16 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
         switch (view.getId()) {
             case R.id.btnCreateEditTicket:
-                if (!isEditMode()) {
-                    if (!emptyFieldsLeft()){
+                if (!emptyFieldsLeft()){
+                    if (!isEditMode()) { // Si el usuario entró a añadir un ticket nuevo
                         insertNewTicket();
-                    } else {
-                        Toast.makeText(this, R.string.MSG_EMPTY_FIELDS, Toast.LENGTH_SHORT).show();
-                        break;
+                    } else { // Si el usuario entró a editar un ticket existente
+                        updateSelectedTicket();
                     }
 
-                } else {
-                    updateSelectedTicket();
+                    finish();
                 }
 
-                finish();
                 break;
 
             case R.id.fabPhotoFromGallery: // Opción 1 presionada. La foto viene de la galería
@@ -201,7 +206,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
                 break;
 
-            case R.id.btnGetOCR:
+            case R.id.btnGetOCR: // Opción 3 presionada. Botón del OCR. Se busca texto en la imagen y si se encuentra se pone en la descripción
                 DisplayMetrics metrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -230,7 +235,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
-            @Override
+            @Override // Error al obtener una imagen
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
                 Toast.makeText(AddEditTicket.this, R.string.MSG_IMG_PICK_ERROR, Toast.LENGTH_SHORT).show();
             }
@@ -259,23 +264,13 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
         llLocationContainer.setVisibility(View.GONE);
 
-        if (hasLocationPermision()) {
+        if (hasLocationPermision()) { // Si el usuario ha aprobado los permisos de localizacion se saca el mapa
             llLocationContainer.setVisibility(View.VISIBLE);
             mapTicketLocation.onResume();
         } else {
-            if (!permaDenied) {
+            if (!permaDenied) { // Si no los ha denegado permanentemente los pedimos (tambien sirve para cuando entra por primera vez)
                 requestLocation();
             }
-        }
-    }
-
-    private void requestLocation() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            llLocationContainer.setVisibility(View.VISIBLE);
-        } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.MSG_LOCATION_RAT), AddEditTicket.LOCATION_REQUEST, perms);
         }
     }
 
@@ -306,6 +301,17 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    private void requestLocation() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            llLocationContainer.setVisibility(View.VISIBLE);
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.MSG_LOCATION_RAT), AddEditTicket.LOCATION_REQUEST, perms);
+        }
+    }
+
+    // Abrir la cámara. Respetando permisos
     private void openCamera() {
         String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -317,6 +323,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Abrir la galería. Respeta permisos
     private void openGallery() {
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -328,12 +335,14 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Devuelve si el usuario ha dado permiso para usar su localización
     private boolean hasLocationPermision(){
         String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
         return EasyPermissions.hasPermissions(this, perms);
     }
 
+    // Inicializa el mapa con un Callback
     private void initMap(){
         mapTicketLocation.onCreate(mMapBundle);
         mapTicketLocation.getMapAsync(this);
@@ -343,10 +352,11 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        // Se le pasan los request a la librería 'EasyPermissions' para que los gestione ella
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission") // EasyPermissions gestiona los permisos, pero Android sigue creyendo que no se han respetado
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         switch (requestCode) {
@@ -366,6 +376,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Si se rechazan los permisos
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
@@ -373,6 +384,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Recoge la información del formulario introducida por el usuario
     public void fetchNewTicketInfo(){
 
         // Se recoge la información del formulario
@@ -380,7 +392,10 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         mNewTicket.setDescription(etDescription.getText().toString());
         mNewTicket.setPrice(Double.parseDouble(etPrice.getText().toString()));
         mNewTicket.setCategory(spCategories.getSelectedItem().toString());
-        mNewTicket.setImgFilename(mImgName);
+
+        if (mImgName != null) {
+            mNewTicket.setImgFilename(mImgName);
+        }
 
         if (hasLocationPermision()) {
             mNewTicket.setLatitude(mLocation.getLatitude());
@@ -388,11 +403,13 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Inserta un ticket nuevo en la base de datos con los datos que el usuario ha proporcionado
     public void insertNewTicket(){
         fetchNewTicketInfo();
         mTicketDB.insertTicket(mNewTicket);
     }
 
+    // Updatea la información de un ticket
     public void updateSelectedTicket(){
 
         // Se recoge la información del formulario, haya cambiado o no
@@ -409,21 +426,41 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         mTicketDB.updateTicket(mSelTicket);
     }
 
+    // Controla que no se dejen campos en blanco en el formulario de añadir un ticket
     public boolean emptyFieldsLeft(){
-        return etTitle.getText().toString().isEmpty() || etDescription.getText().toString().isEmpty() || etPrice.getText().toString().isEmpty() || mImgName == null;
+        int empty = 0;
+
+        if (etTitle.getText().toString().isEmpty()) {
+            etTitle.setError(getString(R.string.MSG_EMPTY_TITLE));
+            empty++;
+        }
+
+        if (etDescription.getText().toString().isEmpty()) {
+            etDescription.setError(getString(R.string.MSG_EMPTY_DESC));
+            empty++;
+        }
+
+        if (etPrice.getText().toString().isEmpty()) {
+            etPrice.setError(getString(R.string.MSG_EMPTY_PRICE));
+            empty++;
+        }
+
+        return empty > 0;
     }
 
+    // Devuelve si el usuario entró a añadir un ticket nuevo o a editar uno existente
     public boolean isEditMode(){
         return getIntent().getExtras() != null;
     }
 
+    // Resultado del Callback
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
         if (hasLocationPermision()){
-            if (!isEditMode()){
+            if (!isEditMode()){ // Si el usuario entró a añadir un ticket nuevo
                 mMap.setMyLocationEnabled(true);
 
                 mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
@@ -445,7 +482,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
                 mMap.setOnMyLocationButtonClickListener(this);
                 mMap.setOnMyLocationClickListener(this);
-            } else {
+            } else { // Si el usuario entró a editar un ticket...
                 if (mSelTicket.getLatitude() != 0 && mSelTicket.getLongitude() != 0) {
                     markTicketLocationOnMap();
                 } else {
@@ -456,6 +493,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Marca en el mapa la cocalización del ticket seleccionado (cuando el usuario entra a editar)
     public void markTicketLocationOnMap(){
         LatLng latLng = new LatLng(mSelTicket.getLatitude(), mSelTicket.getLongitude());
         mMap.addMarker(new MarkerOptions()
@@ -475,6 +513,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         return false;
     }
 
+    // Hace una petición con la API de Google Geocoding para obtener la dirección completa del usuario en modo texto
     public void printFormattedAddress() {
         String parsedLatitude = String.valueOf(mLocation.getLatitude()).replace(",", ".");
         String parsedLongitude = String.valueOf(mLocation.getLongitude()).replace(",", ".");
@@ -491,9 +530,12 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                JsonObject jsonGeolocation = new JsonParser().parse(response.body().string()).getAsJsonObject();
+                JsonObject jsonResponse = new JsonParser().parse(response.body().string()).getAsJsonObject();
 
-                mFormattedAddress = jsonGeolocation.get("results").getAsJsonArray().get(2).getAsJsonObject().get("formatted_address").getAsString();
+                JsonArray jsonResults = jsonResponse.get("results").getAsJsonArray();
+
+                mFormattedAddress = jsonResults.size() >= 3 ? jsonResults.get(2).getAsJsonObject().get("formatted_address").getAsString() : jsonResults.get(jsonResults.size() - 1).getAsJsonObject().get("formatted_address").getAsString();
+
                 mNewTicket.setAddress(mFormattedAddress);
 
                 runOnUiThread(new Runnable() {
@@ -506,6 +548,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    // Devuelve el texto encontrado en un Bitmap (OCR)
     public String getOCRFromBitmap(Bitmap bitmap){
         Frame frame = new Frame.Builder().setBitmap(bitmap).build();
 
@@ -523,6 +566,7 @@ public class AddEditTicket extends AppCompatActivity implements View.OnClickList
         return imageOCR;
     }
 
+    // Coge todos los nombres de las categorías y los mete a un array para ser usado en el Spinner
     public void fillCategoryNamesArray(){
         int size = mCategoryList.size();
 

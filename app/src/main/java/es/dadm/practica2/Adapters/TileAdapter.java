@@ -57,6 +57,7 @@ public class TileAdapter extends RecyclerView.Adapter<TileAdapter.TileViewHolder
     public TileViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_tile_mode, viewGroup, false);
 
+        // Para poner el tamaño de cada elemento a la mitad de la pantalla
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         int desiredWidth = displayMetrics.widthPixels / 2;
 

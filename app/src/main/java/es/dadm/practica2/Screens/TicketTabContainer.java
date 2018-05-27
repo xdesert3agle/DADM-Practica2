@@ -15,7 +15,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.dadm.practica2.Util.DrawerMenuActivity;
+import es.dadm.practica2.Abstract.DrawerMenuActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dadm.practica2.Adapters.TabsAdapter;
@@ -28,11 +28,6 @@ public class TicketTabContainer extends DrawerMenuActivity {
     @BindView(R.id.vpContent) ViewPager mViewPager;
     @BindView(R.id.tlTabs) TabLayout mTabLayout;
     @BindView(R.id.toolbar) Toolbar mToolbar;
-
-    private TabsAdapter mTabAdapter;
-    private fragmentList mFragmentList;
-    private fragmentTiles mFragmentTiles;
-    private fragmentCards mFragmentCards;
 
     private TicketDB mTicketDB;
     private List<Ticket> mTicketList = new ArrayList<>();
@@ -64,20 +59,20 @@ public class TicketTabContainer extends DrawerMenuActivity {
     }
 
     private void setUpViewPager(ViewPager viewPager) {
-        mTabAdapter = new TabsAdapter(getSupportFragmentManager());
+        TabsAdapter tabAdapter = new TabsAdapter(getSupportFragmentManager());
 
-        mFragmentList = new fragmentList();
-        mFragmentTiles = new fragmentTiles();
-        mFragmentCards = new fragmentCards();
+        FragmentList fragmentList = new FragmentList();
+        FragmentTiles fragmentTiles = new FragmentTiles();
+        FragmentCards fragmentCards = new FragmentCards();
 
-        mTabAdapter.addFragment(mFragmentList, getString(R.string.TAB_LIST_TITLE));
-        mTabAdapter.addFragment(mFragmentTiles, getString(R.string.TAB_TILES_TITLE));
-        mTabAdapter.addFragment(mFragmentCards, getString(R.string.TAB_CARDS_TITLE));
+        tabAdapter.addFragment(fragmentList, getString(R.string.TAB_LIST_TITLE));
+        tabAdapter.addFragment(fragmentTiles, getString(R.string.TAB_TILES_TITLE));
+        tabAdapter.addFragment(fragmentCards, getString(R.string.TAB_CARDS_TITLE));
 
-        viewPager.setOffscreenPageLimit(2); // Carga todas las tabs al entrar a la aplicación.
-        viewPager.setAdapter(mTabAdapter);
+        viewPager.setAdapter(tabAdapter);
     }
 
+    // Menú de la toolbar
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.addBill).setIcon(R.drawable.ic_add_white_24dp);
@@ -95,7 +90,7 @@ public class TicketTabContainer extends DrawerMenuActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.addBill: // Registrar una factura nueva
+            case R.id.addBill: // Botón + --> Registrar una factura nueva
                 startActivity(new Intent(TicketTabContainer.this, AddEditTicket.class));
 
                 break;
@@ -113,14 +108,17 @@ public class TicketTabContainer extends DrawerMenuActivity {
         setToolbarTicketCount();
     }
 
+    // Actualiza el número de tickets en la toolbar
     private void setToolbarTicketCount(){
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.TITLE_TICKET_TAB_CONTAINER), mTicketDB.getTicketCount()));
     }
 
+    // Devuevle el array de tickets de la BD
     private void loadTicketsFromDB() {
         mTicketList = mTicketDB.getTicketsFromBD();
     }
 
+    // Opciones del menú lateral
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
         switch (position) {
